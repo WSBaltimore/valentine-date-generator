@@ -1,0 +1,22 @@
+<div class="header">
+	<ul class="nav nav-pills pull-right">
+		<li class="active"><a ng-href="#">Home</a></li>
+		<li><a ng-href="#">About</a></li>
+		<li><a ng-href="#">Contact</a></li>
+	</ul>
+	<h3 class="text-muted">valentine date generator</h3>
+</div>
+
+<div class="jumbotron">
+	<h2 ng-hide="auth.user">Login with Facebook</h2>
+	<h2 ng-show="auth.user">Logged in as: {{auth.user.name}}</h2>
+	<p><a class="btn btn-lg btn-success" ng-href="#" ng-hide="auth.user" ng-click="auth.$login('facebook')">Login</a></p>
+	<p><a class="btn btn-lg btn-success" ng-href="#" ng-show="auth.user" ng-click="auth.$logout()">Logout</a></p>
+
+	<p class="text-left" ng-repeat="(key, val) in auth.user"><strong>{{key}}</strong>: {{val}}</p>
+
+</div>
+
+<div class="footer">
+	<p>♥ from the TRY team</p>
+</div>
