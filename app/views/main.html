@@ -13,8 +13,15 @@
 	<p><a class="btn btn-lg btn-success" ng-href="#" ng-hide="auth.user" ng-click="auth.$login('facebook')">Login</a></p>
 	<p><a class="btn btn-lg btn-success" ng-href="#" ng-show="auth.user" ng-click="auth.$logout()">Logout</a></p>
 
-	<p class="text-left" ng-repeat="(key, val) in auth.user"><strong>{{key}}</strong>: {{val}}</p>
-
+	<ul>
+		<li class="text-left" ng-repeat="friend in fbData.friends.data">
+			<p>{{friend.name}}</p>
+			<p>{{friend.gender}}</p>
+			<p>{{friend.location.name}}</p>
+			<p>{{friend.relationship_status}}</p>
+			<p>{{friend.significant_other.name}}</p>
+		</li>
+	</ul>
 </div>
 
 <div class="footer">

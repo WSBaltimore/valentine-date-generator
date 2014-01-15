@@ -13,13 +13,11 @@ app.controller('MainCtrl', function ($scope, $http, $firebaseAuth) {
 		// Get friend info
 		$http({
 			method: 'GET',
-			url: 'https://graph.facebook.com/'+ $scope.auth.user.thirdPartyUserData.id +'?access_token='+ $scope.auth.user.accessToken +'&fields=id,name,gender,age_range,location,relationship_status,significant_other,friends.fields(age_range,gender,location,relationship_status,significant_other)'
-		}).sduccess(function(data, status, headers, config) {
-
+			url: 'https://graph.facebook.com/'+ $scope.auth.user.thirdPartyUserData.id +'?access_token='+ $scope.auth.user.accessToken +'&fields=id,name,gender,age_range,location,relationship_status,significant_other,friends.fields(name,age_range,gender,location,relationship_status,significant_other)'
+		}).success(function(data, status, headers, config) {
 			console.log(data);
+			$scope.fbData = data;;
 		}).error(function(data, status, headers, config) {
-			// called asynchronously if an error occurs
-			// or server returns response with an error status.
 			console.log(data);
 		});
 	});
