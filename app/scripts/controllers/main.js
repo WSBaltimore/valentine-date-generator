@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('MainCtrl', function ($scope, $firebaseAuth) {
+app.controller('MainCtrl', function ($scope, $http, $firebaseAuth) {
 	var firebase = new Firebase('https://valentine-date-generator.firebaseio.com');
 
 	// AngularFire approach
@@ -8,6 +8,20 @@ app.controller('MainCtrl', function ($scope, $firebaseAuth) {
 
 	$scope.$on("$firebaseAuth:login", function(e, user) {
 		$scope.auth.user = user;
+		console.log($scope.auth.user);
+
+		// Get friend info
+		$http({
+			method: 'GET',
+			url: 'https://graph.facebook.com/'+ $scope.auth.user.thirdPartyUserData.id +'?access_token='+ $scope.auth.user.accessToken +'&fields=id,name,gender,age_range,location,relationship_status,significant_other,friends.fields(age_range,gender,location,relationship_status,significant_other)'
+		}).sduccess(function(data, status, headers, config) {
+
+			console.log(data);
+		}).error(function(data, status, headers, config) {
+			// called asynchronously if an error occurs
+			// or server returns response with an error status.
+			console.log(data);
+		});
 	});
 
 	// Firebase approach
