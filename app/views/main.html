@@ -8,21 +8,39 @@
 </div>
 
 <div class="jumbotron">
-	<h2 ng-hide="auth.user">Login with Facebook</h2>
-	<h2 ng-show="auth.user">Logged in as: {{auth.user.name}}</h2>
-	<p><a class="btn btn-lg btn-success" ng-href="#" ng-hide="auth.user" ng-click="auth.$login('facebook')">Login</a></p>
-	<p><a class="btn btn-lg btn-success" ng-href="#" ng-show="auth.user" ng-click="auth.$logout()">Logout</a></p>
-
-	<ul>
-		<li class="text-left" ng-repeat="friend in fbData.friends.data">
-			<p>{{friend.name}}</p>
-			<p>{{friend.gender}}</p>
-			<p>{{friend.location.name}}</p>
-			<p>{{friend.relationship_status}}</p>
-			<p>{{friend.significant_other.name}}</p>
-		</li>
-	</ul>
+	<h2 ng-hide="user">Login with Facebook</h2>
+	<h2 ng-show="user">Logged in as: {{user.name}}</h2>
+	<p><a class="btn btn-lg btn-success" ng-href="#" ng-hide="user" ng-click="login()">Login</a></p>
+	<p><a class="btn btn-lg btn-success" ng-href="#" ng-show="user" ng-click="logout()">Logout</a></p>
 </div>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Gender</th>
+			<th>Location</th>
+			<th>Relationship Status</th>
+			<th>Significant Other</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="success">
+			<td>{{user.name}}</td>
+			<td>{{user.gender}}</td>
+			<td>{{user.location.name}}</td>
+			<td>{{user.relationship_status}}</td>
+			<td>{{user.significant_other.name}}</td>
+		</tr>
+		<tr ng-repeat="friend in user.friends.data">
+			<td>{{friend.name}}</td>
+			<td>{{friend.gender}}</td>
+			<td>{{friend.location.name}}</td>
+			<td>{{friend.relationship_status}}</td>
+			<td>{{friend.significant_other.name}}</td>
+		</tr>
+	</tbody>
+</table>
 
 <div class="footer">
 	<p>♥ from the TRY team</p>
