@@ -1,21 +1,15 @@
 'use strict';
 
-app.factory('firebaseAuth', function ($rootScope) {
+app.factory('firebaseAuth', function ($rootScope, $http) {
 	var auth = {};
 	var firebase = new Firebase('https://valentine-date-generator.firebaseio.com');
-	var broadcastAuthEvent = function() {
-		$rootScope.$broadcast('authEvent');
-	};
 
 	auth.client = new FirebaseSimpleLogin(firebase, function(error, user) {
 		if (error) {
 			console.log(error);
 		} else if (user) {
 			auth.user = user;
-			broadcastAuthEvent();
-		} else {
-			auth.user = null;
-			broadcastAuthEvent();
+			$rootScope.$broadcast('authEvent');
 		}
 	});
 
@@ -30,31 +24,31 @@ app.factory('firebaseAuth', function ($rootScope) {
 		auth.client.logout();
 	};
 
+	auth.getFacebookData = function (userId, accessToken) {
+		return $http.get('https://graph.facebook.com/' + userId + '?access_token=' + accessToken + '&fields=id,name,age_range,relationship_status,birthday,education,gender,interested_in,hometown,location,significant_other,security_settings,checkins,family,friends.fields(name,age_range,birthday,relationship_status,gender,hometown,interested_in,significant_other,security_settings,email,location),mutualfriends,picture,email');
+	};
+
 	return auth;
 });
 
 app.controller('MainCtrl', function ($scope, firebaseAuth) {
+	var auth = firebaseAuth;
 
-	$scope.login = firebaseAuth.login;
-	$scope.logout = firebaseAuth.logout;
-	$scope.isLoggedIn = !!$scope.user;
+	$scope.login = auth.login;
+	$scope.logout = auth.logout;
 
-	// src: Alex Vanston (https://coderwall.com/p/ngisma)
-	$scope.safeApply = function(fn) {
-		var phase = this.$root.$$phase;
-		if (phase == '$apply' || phase == '$digest') {
-			if (fn && (typeof(fn) === 'function')) {
-				fn();
-			}
-		} else {
-			this.$apply(fn);
-		}
-	};
-
+	// Once the "user" object is returned from logging in...
 	$scope.$on('authEvent', function() {
-		$scope.$apply(function() {
-			$scope.user = firebaseAuth.user;
+		$scope.safeApply(function() {
+			$scope.user = auth.user;
+
+			// Get data from Facebook
+			auth.getFacebookData($scope.user.id, $scope.user.accessToken).then(function (data) {
+				var fbData = data.data;
+				$scope.friends = fbData.friends.data;
+				console.log($scope.friends);
+			});
+
 		});
 	});
-
 });
