@@ -4,7 +4,7 @@ app.factory('firebaseAuth', function ($http, $q) {
 	var firebase = new Firebase('https://valentine-date-generator.firebaseio.com');
 	var deferredData = $q.defer();
 
-	new FirebaseSimpleLogin(firebase, function(error, user) {
+	var simpleLogin = new FirebaseSimpleLogin(firebase, function(error, user) {
 		if (error) {
 			deferredData.reject(error);
 		} else if (user) {
@@ -46,5 +46,12 @@ app.controller('MainCtrl', function ($scope, firebaseAuth) {
 	function (error) {
 		console.log(error);
 	});
+
+	$scope.login = function () {
+		auth.login();
+	}
+	$scope.logout = function () {
+		auth.logout();
+	};
 
 });
