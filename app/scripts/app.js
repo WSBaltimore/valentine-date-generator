@@ -12,8 +12,17 @@ app.config( function( $routeProvider, $provide ) {
 			templateUrl: 'views/start.html',
 			controller: 'StartCtrl',
 			resolve: {
-				userData: function (firebaseAuth) {
-					return firebaseAuth.getUser();
+				userData: function (firebaseAuth, $http) {
+					return firebaseAuth.getUser().then(function(user) {
+						firebaseAuth.user = user;
+						return user;
+					}).then(function(user) {
+						// Get Facebook data
+						$http.get('https://graph.facebook.com/' + user.id + '?access_token=' + user.accessToken + '&fields=id,name,age_range,relationship_status,birthday,education,gender,interested_in,hometown,location,significant_other,security_settings,checkins,family,friends.fields(name,age_range,birthday,relationship_status,gender,hometown,interested_in,significant_other,security_settings,email,location),mutualfriends,picture,email').then(function(facebook) {
+							firebaseAuth.fbdata = facebook;
+						});
+						return firebaseAuth;
+					});
 				}
 			}
 		})

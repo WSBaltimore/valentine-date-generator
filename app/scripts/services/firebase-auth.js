@@ -16,10 +16,10 @@ app.factory('firebaseAuth', function ($rootScope, $firebaseSimpleLogin) {
 	};
 
 	auth.getUser = function () {
-		return output.auth.$getCurrentUser().then(function(user) {
+		return auth.$getCurrentUser().then(function(user) {
 			return user;
 		});
 	};
 
-	return output;
+	return auth;
 });
