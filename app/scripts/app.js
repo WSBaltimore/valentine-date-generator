@@ -5,8 +5,21 @@ var app = angular.module('valentineDateGeneratorApp', ['ngCookies', 'ngResource'
 app.config( function( $routeProvider, $provide ) {
 	$routeProvider
 		.when('/', {
-			templateUrl: 'views/main.html',
-			controller: 'MainCtrl'
+			templateUrl: 'views/login.html',
+			controller: 'LoginCtrl'
+		})
+		.when('/start', {
+			templateUrl: 'views/start.html',
+			controller: 'StartCtrl',
+			resolve: {
+				userData: function (firebaseAuth) {
+					return firebaseAuth.getUser();
+				}
+			}
+		})
+		.when('/results', {
+			templateUrl: 'views/results.html',
+			controller: 'ResultsCtrl'
 		})
 		.otherwise({
 			redirectTo: '/'
