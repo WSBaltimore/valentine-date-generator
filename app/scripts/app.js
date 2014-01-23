@@ -13,16 +13,22 @@ app.config( function( $routeProvider, $provide ) {
 			controller: 'StartCtrl',
 			resolve: {
 				userData: function (firebaseAuth, $http) {
-					return firebaseAuth.getUser().then(function(user) {
-						firebaseAuth.user = user;
+					var facebookData = {};
+
+					var promise = firebaseAuth.getUser().then(function(user) {
+						facebookData.user = user;
 						return user;
 					}).then(function(user) {
 						// Get Facebook data
-						$http.get('https://graph.facebook.com/' + user.id + '?access_token=' + user.accessToken + '&fields=id,name,age_range,relationship_status,birthday,education,gender,interested_in,hometown,location,significant_other,security_settings,checkins,family,friends.fields(name,age_range,birthday,relationship_status,gender,hometown,interested_in,significant_other,security_settings,email,location),mutualfriends,picture,email').then(function(facebook) {
-							firebaseAuth.fbdata = facebook;
+						return $http.get('https://graph.facebook.com/' + user.id + '?access_token=' + user.accessToken + '&fields=id,name,age_range,relationship_status,birthday,education,gender,interested_in,hometown,location,significant_other,security_settings,checkins,family,friends.fields(name,age_range,birthday,relationship_status,gender,hometown,interested_in,significant_other,security_settings,email,location),mutualfriends,picture,email').then(function(facebook) {
+							facebookData.facebook = facebook.data;
+							return facebookData;
 						});
-						return firebaseAuth;
+					}).then(function(facebookData) {
+						return facebookData;
 					});
+
+					return promise;
 				}
 			}
 		})
