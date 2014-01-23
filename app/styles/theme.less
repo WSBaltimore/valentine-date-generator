@@ -1,1 +1,19 @@
-body { background: url(../images/bg.png) repeat; color: #fff; }
+// Variables
+@dark-red: #9c0505;
+
+// Global
+body { background: url(../images/bg.png) top center repeat; color: #fff; font: 16px/1em @font-family-sans; }
+.container {}
+.main-content { text-align: center; margin: 0 auto; width: 960px; }
+
+.btn { background: @dark-red; border: 0 none; color: #fff; display: inline-block; padding: 40px 50px; text-transform: uppercase; text-align: center;
+	&:hover { cursor: pointer; text-decoration: none; }
+	&.btn-lg { font-size: 36px; }
+}
+
+// Modules
+.page-login { padding: 190px 0 0;
+	h1 { font-size: 28px; text-transform: uppercase;
+		strong { font: 94px/2em @font-family-script; text-transform: none; }
+	}
+}
