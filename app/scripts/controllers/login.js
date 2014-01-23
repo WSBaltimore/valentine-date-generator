@@ -6,5 +6,6 @@ app.controller('LoginCtrl', function ($rootScope, $scope, $location, firebaseAut
 	// Once logged in, redirect to start page
 	$rootScope.$on("$firebaseSimpleLogin:login", function(e, user) {
 		$location.path('/start');
+		console.log('login');
 	});
 });

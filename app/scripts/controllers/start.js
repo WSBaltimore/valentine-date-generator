@@ -1,31 +1,72 @@
 'use strict';
 
-app.controller('StartCtrl', function ($rootScope, $scope, $location, $http, userData) {
+app.controller('StartCtrl', function ($rootScope, $scope, $location, firebaseAuth, userData) {
+	$scope.firebaseAuth = firebaseAuth;
+	$scope.user = userData.user;
+	$scope.friends = userData.facebook.friends.data;
+	console.log($scope.user);
+	console.log($scope.friends);
 
-	//$scope.user = userData.user;
+	/**
+	 * Select Partner
+	 * @return {object} Object containing information about selected partner
+	 */
+	var getPartner = function () {
+		var rand = getRandomInt(0, $scope.friends.length);
+		return $scope.friends[rand];
 
-	console.log(userData);
+		// Todo: limit to m/f only
+		// Todo: limit to non family members
+		// Todo: limit to area nearby user
+		// Todo: allow user to select their own
+	};
 
+	console.log(getPartner());
 
-	// firebaseAuth.auth.$getCurrentUser().then(function(user) {
-	// 	$scope.user = user;
-	// 	return user;
-	// }).then(function(user) {
+	/**
+	 * Select Gift
+	 * @return {string} Name of the gift to buy your partner
+	 */
+	var getGift = function () {
+		var giftName;
+		return giftName;
+	};
 
-		// // Get Facebook data
-		// $http.get('https://graph.facebook.com/' + user.id + '?access_token=' + user.accessToken + '&fields=id,name,age_range,relationship_status,birthday,education,gender,interested_in,hometown,location,significant_other,security_settings,checkins,family,friends.fields(name,age_range,birthday,relationship_status,gender,hometown,interested_in,significant_other,security_settings,email,location),mutualfriends,picture,email').then(function(facebook) {
-		// 	$scope.friends = facebook.data.friends.data;
-		// }).then(function() {
-		// 	// Select Friend
-		// 	// Select Gift
-		// 	// Select Restaurant
-		// 	// Select Activity
-		// });
+	console.log(getGift());
 
-	// });
+	/**
+	 * Select Restaurant
+	 * @return {string} Name of the restaurant you should take your partner to
+	 */
+	var getRestaurant = function () {
+		var restaurantName;
+		return restaurantName;
+	};
 
-	// Once logged in, redirect to start page
+	console.log(getRestaurant());
+
+	/**
+	 * Select Activity
+	 * @return {string} Name of the activity to do with your partner
+	 */
+	var getActivity = function () {
+		var activityName;
+		return activityName;
+	};
+
+	console.log(getActivity());
+
+	/**
+	 * Returns a random integer between min and max
+	 * Using Math.round() will give you a non-uniform distribution!
+	 */
+	function getRandomInt(min, max) {
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+
+	// Return to homepage on logout
 	$rootScope.$on("$firebaseSimpleLogin:logout", function(e, user) {
 		$location.path('/');
+		console.log('logout');
 	});
 });
