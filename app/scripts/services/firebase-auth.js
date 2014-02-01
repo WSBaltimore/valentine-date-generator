@@ -1,6 +1,6 @@
 'use strict';
 
-app.factory('firebaseAuth', function ($rootScope, $firebaseSimpleLogin) {
+app.factory('firebaseAuth', function ($http, $firebaseSimpleLogin) {
 	var firebaseRef = new Firebase('https://valentine-date-generator.firebaseio.com');
 	var auth = $firebaseSimpleLogin(firebaseRef);
 
@@ -18,6 +18,14 @@ app.factory('firebaseAuth', function ($rootScope, $firebaseSimpleLogin) {
 	auth.getUser = function () {
 		return auth.$getCurrentUser().then(function(user) {
 			return user;
+		});
+	};
+
+	auth.getFacebookData = function() {
+		return auth.getUser().then(function(user) {
+			return $http.get('https://graph.facebook.com/' + user.id + '?access_token=' + user.accessToken + '&fields=id,name,age_range,relationship_status,gender,location,significant_other,checkins,family,friends.fields(name,age_range,birthday,relationship_status,gender,significant_other,television.fields(name,id),movies.fields(name,id),games.fields(name,id),music.fields(id,name),books.fields(name,id))').then(function(facebook) {
+				return facebook.data;
+			});
 		});
 	};
 
