@@ -10,26 +10,7 @@ app.config( function( $routeProvider, $provide ) {
 		})
 		.when('/start', {
 			templateUrl: 'views/start.html',
-			controller: 'StartCtrl',
-			resolve: {
-				userData: function (firebaseAuth, $http) {
-					var facebookData = {};
-
-					return firebaseAuth.getUser().then(function(user) {
-						facebookData.user = user;
-						return user;
-					}).then(function(user) {
-						// Get Facebook data
-						return $http.get('https://graph.facebook.com/' + user.id + '?access_token=' + user.accessToken + '&fields=id,name,age_range,relationship_status,gender,interested_in,hometown,location,significant_other,checkins,family,friends.fields(name,age_range,birthday,relationship_status,gender,hometown,interested_in,significant_other,security_settings,email,location),mutualfriends,picture,email').then(function(facebook) {
-							facebookData.facebook = facebook.data;
-							return facebookData;
-						});
-					});
-
-					return facebookData;
-
-				}
-			}
+			controller: 'StartCtrl'
 		})
 		.when('/results', {
 			templateUrl: 'views/results.html',
