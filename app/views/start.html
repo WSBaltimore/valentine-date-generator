@@ -8,11 +8,15 @@
 	<h2>Logged in as: {{user.name}}</h2>
 </div>
 
-<ul>
-	<li ng-repeat="(key, value) in user.thirdPartyUserData">{{key}}</li>
-</ul>
+<!-- <ul>
+	<li ng-repeat="(key, value) in user.thirdPartyUserData">{{key}}: {{value}}</li>
+</ul> -->
 
-<!-- <table class="table">
+<!-- <ul>
+	<li ng-repeat="(key, value) in friends">{{key}}: {{value}}</li>
+</ul> -->
+
+<table class="table">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -38,7 +42,7 @@
 			<td>{{friend.significant_other.name}}</td>
 		</tr>
 	</tbody>
-</table> -->
+</table>
 
 <div class="footer">
 	<p>♥ from the TRY team</p>

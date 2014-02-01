@@ -1,60 +1,13 @@
 'use strict';
 
-app.controller('StartCtrl', function ($rootScope, $scope, $location, firebaseAuth, userData) {
+app.controller('StartCtrl', function ($rootScope, $scope, $http, $location, firebaseAuth, userData, activity, restaurant, gift) {
 	$scope.firebaseAuth = firebaseAuth;
-	$scope.user = userData.user;
+	$scope.user = userData;
 	$scope.friends = userData.facebook.friends.data;
+
 	console.log($scope.user);
 	console.log($scope.friends);
 
-	/**
-	 * Select Partner
-	 * @return {object} Object containing information about selected partner
-	 */
-	var getPartner = function () {
-		var rand = getRandomInt(0, $scope.friends.length);
-		return $scope.friends[rand];
-
-		// Todo: limit to m/f only
-		// Todo: limit to non family members
-		// Todo: limit to area nearby user
-		// Todo: allow user to select their own
-	};
-
-	console.log(getPartner());
-
-	/**
-	 * Select Gift
-	 * @return {string} Name of the gift to buy your partner
-	 */
-	var getGift = function () {
-		var giftName;
-		return giftName;
-	};
-
-	console.log(getGift());
-
-	/**
-	 * Select Restaurant
-	 * @return {string} Name of the restaurant you should take your partner to
-	 */
-	var getRestaurant = function () {
-		var restaurantName;
-		return restaurantName;
-	};
-
-	console.log(getRestaurant());
-
-	/**
-	 * Select Activity
-	 * @return {string} Name of the activity to do with your partner
-	 */
-	var getActivity = function () {
-		var activityName;
-		return activityName;
-	};
-
-	console.log(getActivity());
 
 	/**
 	 * Returns a random integer between min and max
@@ -67,6 +20,5 @@ app.controller('StartCtrl', function ($rootScope, $scope, $location, firebaseAut
 	// Return to homepage on logout
 	$rootScope.$on("$firebaseSimpleLogin:logout", function(e, user) {
 		$location.path('/');
-		console.log('logout');
 	});
 });
