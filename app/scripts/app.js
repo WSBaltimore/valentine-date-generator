@@ -15,7 +15,7 @@ app.config( function( $routeProvider, $provide ) {
 				userData: function (firebaseAuth, $http) {
 					var facebookData = {};
 
-					var promise = firebaseAuth.getUser().then(function(user) {
+					return firebaseAuth.getUser().then(function(user) {
 						facebookData.user = user;
 						return user;
 					}).then(function(user) {
@@ -24,11 +24,10 @@ app.config( function( $routeProvider, $provide ) {
 							facebookData.facebook = facebook.data;
 							return facebookData;
 						});
-					}).then(function(facebookData) {
-						return facebookData;
 					});
 
-					return promise;
+					return facebookData;
+
 				}
 			}
 		})
