@@ -1,13 +1,35 @@
 'use strict';
 
-app.controller('StartCtrl', function ($rootScope, $scope, $http, $location, firebaseAuth, activity, restaurant, gift) {
-	$scope.firebaseAuth = firebaseAuth;
+app.controller('StartCtrl', function ($scope, $location, firebaseAuth, date) {
 
-	// console.log($scope.user);
-	// console.log($scope.friends);
+	$scope.genderChoices = [
+		{
+			'name': 'man or a woman',
+			'value': 'both'
+		},
+		{
+			'name': 'man',
+			'value': 'man'
+		},
+		{
+			'name': 'woman',
+			'value': 'woman'
+		}
+	];
+
+	$scope.userPreferences = {
+		location: '', // this should default to location provided by facebook
+		gender: $scope.genderChoices[0]
+	};
+
+	$scope.planDate = function() {
+		date.setUserPreferences($scope.userPreferences);
+		$location.path('/results');
+	};
 
 	// Return to homepage on logout
-	$rootScope.$on("$firebaseSimpleLogin:logout", function(e, user) {
+	$scope.$on("$firebaseSimpleLogin:logout", function(e, user) {
 		$location.path('/');
 	});
+
 });

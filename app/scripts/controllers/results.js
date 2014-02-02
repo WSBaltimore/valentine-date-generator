@@ -1,9 +1,13 @@
 'use strict';
 
-app.controller('ResultsCtrl', function ($rootScope, $scope, $location, firebaseAuth) {
+app.controller('ResultsCtrl', function ($scope, $location, firebaseAuth, date) {
+
+	date.getGift().then(function(gift) {
+		console.log(gift);
+	});
 
 	// Return to homepage on logout
-	$rootScope.$on("$firebaseSimpleLogin:logout", function(e, user) {
+	$scope.$on("$firebaseSimpleLogin:logout", function(e, user) {
 		$location.path('/');
 	});
 });

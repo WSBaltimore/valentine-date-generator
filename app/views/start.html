@@ -1,49 +1,11 @@
 <div class="page-start main-content">
 	<div class="scenario">
-		<a class="btn btn-lg" ng-href="" ng-click="">Plan My Date</a>
+		<p class="statement">
+			I want to take a
+			<select ng-model="userPreferences.gender" ng-options="gender.name for gender in genderChoices"></select>
+			on a date in
+			<input type="text" ng-model="userPreferences.location" />
+		</p>
+		<a class="btn btn-lg" ng-href="" ng-click="planDate()">Plan My Date</a>
 	</div>
-</div>
-
-<div class="jumbotron">
-	<h2>Logged in as: {{user.name}}</h2>
-</div>
-
-<!-- <ul>
-	<li ng-repeat="(key, value) in user.thirdPartyUserData">{{key}}: {{value}}</li>
-</ul> -->
-
-<!-- <ul>
-	<li ng-repeat="(key, value) in friends">{{key}}: {{value}}</li>
-</ul> -->
-
-<table class="table">
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Gender</th>
-			<th>Location</th>
-			<th>Relationship Status</th>
-			<th>Significant Other</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr class="success">
-			<td>{{user.name}}</td>
-			<td>{{user.gender}}</td>
-			<td>{{user.location.name}}</td>
-			<td>{{user.relationship_status}}</td>
-			<td>{{user.significant_other.name}}</td>
-		</tr>
-		<tr ng-repeat="friend in friends">
-			<td>{{friend.name}}</td>
-			<td>{{friend.gender}}</td>
-			<td>{{friend.location.name}}</td>
-			<td>{{friend.relationship_status}}</td>
-			<td>{{friend.significant_other.name}}</td>
-		</tr>
-	</tbody>
-</table>
-
-<div class="footer">
-	<p>♥ from the TRY team</p>
 </div>
