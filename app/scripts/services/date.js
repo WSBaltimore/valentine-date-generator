@@ -42,31 +42,25 @@ app.factory('date', function ($http, firebaseAuth) {
 	};
 
 	/**
-	 * Get an object containing the user's friends data from Facebook
-	 * @return {object} A promise containing the user's friend data
-	 */
-	var getFriendsData = function (facebookData) {
-		var facebookData = facebookData || getFacebookData();
-
-		return facebookData.then(function(facebook) {
-			console.log('retrieved friend data');
-			return facebook.friends.data;
-		});
-	};
-
-	/**
 	 * Determines an appropriate partner for a date based on user's preferences
 	 * @return {object} A promise containing the user's selected partner's data
 	 */
-	var getPartner = function (friends) {
+	var getPartner = function (facebookData) {
+		var family = [];
+		var friends = facebookData.friends.data;
 		var available_friends = [];
 		var valid = true;
+
+		// setup array of family member IDs
+		angular.forEach(facebookData.family.data, function(family_member, key) {
+			this.push( family_member.id );
+		}, family);
 
 		angular.forEach(friends, function(friend, key) {
 			valid = true;
 
 			// filter by age
-			if( friend.hasOwnProperty('birthday') && friend.birthday.length == 10 && getAge( friend.birthday ) < 50 ) {
+			if( friend.hasOwnProperty('birthday') && friend.birthday.length == 10 && getAge( friend.birthday ) < 18 ) {
 				valid = false;
 			}
 
@@ -81,6 +75,11 @@ app.factory('date', function ($http, firebaseAuth) {
 
 			// filter by relationship status
 			if( friend.hasOwnProperty('relationship_status') && friend.relationship_status != 'Single' ) {
+				valid = false;
+			}
+
+			// filter by family relation
+			if( family.indexOf( friend.id ) != -1 ) {
 				valid = false;
 			}
 
@@ -143,7 +142,6 @@ app.factory('date', function ($http, firebaseAuth) {
 			default:
 				return giftDefaults[ getRandomInt(0, giftDefaults.length - 1) ];
 		}
-
 	};
 
 	/**
@@ -171,8 +169,8 @@ app.factory('date', function ($http, firebaseAuth) {
 	 * @return {object} An object containing the details of the date
 	 */
 	var generateDate = function () {
-		return getFriendsData().then(function(friends) {
-			return getPartner(friends).then(function (partner) {
+		return getFacebookData().then(function(facebookData) {
+			return getPartner(facebookData).then(function (partner) {
 				date.partner = partner.data;
 				date.gift = getGift(partner.data);
 				date.restaurant = getRestaurant(partner.data);
@@ -207,7 +205,6 @@ app.factory('date', function ($http, firebaseAuth) {
 
 	return {
 		getFacebookData: getFacebookData,
-		getFriendsData: getFriendsData,
 		setUserPreferences: setUserPreferences,
 		getPartner: getPartner,
 		getGift: getGift,
