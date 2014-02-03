@@ -63,7 +63,7 @@ app.factory('date', function ($http, firebaseAuth) {
 		var friendId = friends[ getRandomInt(0, friends.length - 1) ].id;
 
 		return firebaseAuth.getUser().then(function(user) {
-			return $http.get('https://graph.facebook.com/' + friendId + '?access_token=' + user.accessToken + '&fields=name,age_range,favorite_athletes,favorite_teams,albums,television,music,movies,games,books').then(function(partner) {
+			return $http.get('https://graph.facebook.com/' + friendId + '?access_token=' + user.accessToken + '&fields=name,gender,age_range,favorite_athletes,favorite_teams,albums,television,music,movies,games,books').then(function(partner) {
 				console.log('retrieved partner data');
 				return partner;
 			});
@@ -75,6 +75,7 @@ app.factory('date', function ($http, firebaseAuth) {
 	 * @param {object} partner An object containing data about the user's selected partner
 	 */
 	var getGift = function (partner) {
+		console.log(partner);
 		var gift;
 		var giftText;
 
@@ -156,12 +157,12 @@ app.factory('date', function ($http, firebaseAuth) {
 		return getFriendsData().then(function(friends) {
 			return getPartner(friends).then(function (partner) {
 				date.partner = partner.data;
-				date.gift = getGift(partner);
-				date.restaurant = getRestaurant(partner);
-				date.activity = getActivity(partner);
+				date.gift = getGift(partner.data);
+				date.restaurant = getRestaurant(partner.data);
+				date.activity = getActivity(partner.data);
 
 				return date;
-			})
+			});
 		});
 	};
 
