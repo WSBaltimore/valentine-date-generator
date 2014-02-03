@@ -76,58 +76,47 @@ app.factory('date', function ($http, firebaseAuth) {
 	 */
 	var getGift = function (partner) {
 
-		var gift;
-		var giftText;
+		var giftDefaults = ['flowers', 'chocolates', 'balloons', 'a framed picture', 'a stuffed animal'];
+		var interests = ['music', 'movies', 'television', 'books', 'games'];
+		var friendInterests = [];
 
-		// incoming super janky coding practices because I don't know how to do anything properly with looping and arrays in JS
-		var books_count = ( partner.hasOwnProperty('books') ) ? partner.books.data.length : 0;
-		var games_count = ( partner.hasOwnProperty('games') ) ? partner.games.data.length : 0;
-		var movies_count = ( partner.hasOwnProperty('movies') ) ? partner.movies.data.length : 0;
-		var music_count = ( partner.hasOwnProperty('music') ) ? partner.music.data.length : 0;
-		var television_count = ( partner.hasOwnProperty('television') ) ? partner.television.data.length : 0;
-		var count_totals = [ books_count, games_count, movies_count, music_count, television_count ];
-		var count_max = Math.max.apply( Math, count_totals );
-		var count_max_index = count_totals.indexOf( count_max );
+		angular.forEach(partner, function(value, key) {
+			// get only user non-inherited properties and only if they match our interests array
+			if (partner.hasOwnProperty(key) && interests.indexOf(key) !== -1) {
+				this.push(key);
+			}
+		}, friendInterests);
 
-		if( count_max == 0 ) {
-			// user has no media interests - fall back to gender defaults
-			switch( partner.gender ) {
-				case 'female':
-					giftText = 'flowers';
-					break;
-				case 'male':
-					giftText = 'chocolate';
-					break;
-				default:
-					giftText = 'i dunno man good luck';
-			}
-		} else {
-			// user has media interests - pick a gift from their favorite medium
-			switch( count_max_index ) {
-				case 0:
-					gift = partner.books.data[ getRandomInt( 0, books_count - 1 ) ];
-					giftText = 'a hardback copy of' + gift.name;
-					break;
-				case 1:
-					gift = partner.games.data[ getRandomInt( 0, games_count - 1 ) ];
-					giftText = 'a copy of ' + gift.name;
-					break;
-				case 2:
-					gift = partner.movies.data[ getRandomInt( 0, movies_count - 1 ) ];
-					giftText = gift.name + ' on DVD';
-					break;
-				case 3:
-					gift = partner.music.data[ getRandomInt( 0, music_count - 1 ) ];
-					giftText = 'tickets to a ' + gift.name + ' concert';
-					break;
-				case 4:
-					gift = partner.television.data[ getRandomInt( 0, television_count - 1 ) ];
-					giftText = 'a ' + gift.name + ' box set';
-					break;
-			}
+		// user has no media interests, fall back to defaults
+		if ( !friendInterests.length ) {
+			return giftDefaults[ getRandomInt(0, giftDefaults.length - 1) ];
 		}
 
-		return giftText;
+		var randomInterest = friendInterests[ getRandomInt(0, friendInterests.length - 1) ]; // string of interest type eg. 'movies'
+		var interestData = partner[randomInterest].data; // array of objects containing individual likes eg. [0]object.name = 'lord of the rings'
+		var interestName = interestData[ getRandomInt(0, interestData.length - 1) ].name; console.log(interestName); // string of the selected 'like' eg. 'top gun'
+
+		// user has media interests - pick a gift from their favorite medium
+		switch( randomInterest ) {
+			case 'books':
+				return 'a hardback copy of ' + interestName;
+				break;
+			case 'games':
+				return 'a copy of ' + interestName;
+				break;
+			case 'movies':
+				return interestName + ' on DVD';
+				break;
+			case 'music':
+				return 'tickets to a ' + interestName + ' concert';
+				break;
+			case 'television':
+				return 'a ' + interestName + ' box set';
+				break;
+			default:
+				return giftDefaults[ getRandomInt(0, giftDefaults.length - 1) ];
+		}
+
 	};
 
 	/**
