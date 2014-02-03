@@ -34,7 +34,7 @@ app.factory('date', function ($http, firebaseAuth) {
 	 */
 	var getFacebookData = function() {
 		return firebaseAuth.getUser().then(function(user) {
-			return $http.get('https://graph.facebook.com/' + user.id + '?access_token=' + user.accessToken + '&fields=id,name,age_range,relationship_status,gender,location,significant_other,checkins,family,friends.fields(name,age_range,birthday,relationship_status,gender,significant_other,television.fields(name,id),movies.fields(name,id),games.fields(name,id),music.fields(id,name),books.fields(name,id))').then(function(facebook) {
+			return $http.get('https://graph.facebook.com/' + user.id + '?access_token=' + user.accessToken + '&fields=id,name,age_range,relationship_status,gender,location,significant_other,checkins,family,friends.fields(name,age_range,birthday,relationship_status,gender)').then(function(facebook) {
 				console.log('retrieved facebook data');
 				return facebook.data;
 			});
@@ -43,7 +43,7 @@ app.factory('date', function ($http, firebaseAuth) {
 
 	/**
 	 * Get an object containing the user's friends data from Facebook
-	 * @return {object}          A promise containing the user's friend data
+	 * @return {object} A promise containing the user's friend data
 	 */
 	var getFriendsData = function (facebookData) {
 		var facebookData = facebookData || getFacebookData();
@@ -59,8 +59,36 @@ app.factory('date', function ($http, firebaseAuth) {
 	 * @return {object} A promise containing the user's selected partner's data
 	 */
 	var getPartner = function (friends) {
+		var available_friends = [];
+		var valid = true;
+
+		angular.forEach(friends, function(friend, key) {
+			valid = true;
+
+			// filter by age
+			if( friend.hasOwnProperty('birthday') && friend.birthday.length == 10 && getAge( friend.birthday ) < 50 ) {
+				valid = false;
+			}
+
+			// filter by gender
+			if( friend.hasOwnProperty('gender') ) {
+				if( userPreferences.gender.value != 'both' && userPreferences.gender.value != friend.gender ) {
+					valid = false;
+				}
+			} else if( userPreferences.gender.value != 'both' ) {
+				valid = false;
+			}
+
+			// filter by relationship status
+			if( friend.hasOwnProperty('relationship_status') && friend.relationship_status != 'Single' ) {
+				valid = false;
+			}
+
+			if( valid ) this.push( friend );
+		}, available_friends);
+
 		// Just pick a random friend for now...
-		var friendId = friends[ getRandomInt(0, friends.length - 1) ].id;
+		var friendId = available_friends[ getRandomInt(0, available_friends.length - 1) ].id;
 
 		return firebaseAuth.getUser().then(function(user) {
 			return $http.get('https://graph.facebook.com/' + friendId + '?access_token=' + user.accessToken + '&fields=name,gender,age_range,favorite_athletes,favorite_teams,albums,television,music,movies,games,books').then(function(partner) {
@@ -75,7 +103,6 @@ app.factory('date', function ($http, firebaseAuth) {
 	 * @param {object} partner An object containing data about the user's selected partner
 	 */
 	var getGift = function (partner) {
-		console.log(partner);
 		var gift;
 		var giftText;
 
@@ -172,6 +199,20 @@ app.factory('date', function ($http, firebaseAuth) {
 	 */
 	function getRandomInt(min, max) {
 		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+
+	/**
+	 * Calculates a user's age given a properly formatted date of birth
+	 */
+	function getAge(birthday) {
+	    var today = new Date();
+	    var birthDate = new Date(birthday);
+	    var age = today.getFullYear() - birthDate.getFullYear();
+	    var m = today.getMonth() - birthDate.getMonth();
+	    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+	        age--;
+	    }    
+	    return age;
 	}
 
 	return {
