@@ -14,7 +14,12 @@ app.config( function( $routeProvider, $provide ) {
 		})
 		.when('/results', {
 			templateUrl: 'views/results.html',
-			controller: 'ResultsCtrl'
+			controller: 'ResultsCtrl',
+			resolve: {
+				theDate: function (date) {
+					return date.generateDate();
+				}
+			}
 		})
 		.otherwise({
 			redirectTo: '/'

@@ -1,9 +1,40 @@
 'use strict';
 
-app.controller('StartCtrl', function ($rootScope, $scope, $http, $location, firebaseAuth, activity, restaurant, gift) {
+app.controller('StartCtrl', function ($scope, $location, firebaseAuth, date) {
+
+	$scope.genderChoices = [
+		{
+			'name': 'man or a woman',
+			'value': 'both'
+		},
+		{
+			'name': 'man',
+			'value': 'male'
+		},
+		{
+			'name': 'woman',
+			'value': 'female'
+		}
+	];
+
+	$scope.userPreferences = {
+		location: '',
+		gender: $scope.genderChoices[0]
+	};
+
+	// Set location
+	firebaseAuth.$getCurrentUser().then(function(data) {
+		$scope.userPreferences.location = data.location.name;
+	});
+
+	$scope.planDate = function() {
+		date.setUserPreferences($scope.userPreferences);
+		$location.path('/results');
+	};
 
 	// Return to homepage on logout
-	$rootScope.$on("$firebaseSimpleLogin:logout", function(e, user) {
+	$scope.$on("$firebaseSimpleLogin:logout", function(e, user) {
 		$location.path('/');
 	});
+
 });
