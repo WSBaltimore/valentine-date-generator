@@ -45,10 +45,48 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 	 * @return {object} A promise containing the user's selected partner's data
 	 */
 	var getPartnerData = function (facebook) {
+		var family = [];
 		var friends = facebook.friends.data;
+		var available_friends = [];
+		var valid = true;
+
+		// setup array of family member IDs
+		angular.forEach(facebook.family.data, function(family_member, key) {
+			this.push( family_member.id );
+		}, family);
+
+		angular.forEach(friends, function(friend, key) {
+			valid = true;
+
+			// filter by age
+			if( friend.hasOwnProperty('birthday') && friend.birthday.length == 10 && getAge( friend.birthday ) < 18 ) {
+				valid = false;
+			}
+
+			// filter by gender
+			if( friend.hasOwnProperty('gender') ) {
+				if( userPreferences.gender.value != 'both' && userPreferences.gender.value != friend.gender ) {
+					valid = false;
+				}
+			} else if( userPreferences.gender.value != 'both' ) {
+				valid = false;
+			}
+
+			// filter by relationship status
+			if( friend.hasOwnProperty('relationship_status') && friend.relationship_status != 'Single' ) {
+				valid = false;
+			}
+
+			// filter by family relation
+			if( family.indexOf( friend.id ) != -1 ) {
+				valid = false;
+			}
+
+			if( valid ) this.push( friend );
+		}, available_friends);
 
 		// Just pick a random friend for now...
-		var friendId = getRandomArrayValue(friends).id;
+		var friendId = available_friends[ getRandomInt(0, available_friends.length - 1) ].id;
 
 		return firebaseAuth.getUser().then(function(user) {
 			return $http.get('https://graph.facebook.com/' + friendId + '?access_token=' + user.accessToken + '&fields=name,first_name,gender,age_range,favorite_athletes,favorite_teams,albums,television,music,movies,games,books').then(function(partner) {
@@ -107,7 +145,6 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 	 * @param {object} partner An object containing data about the user's selected partner
 	 */
 	var getGift = function (partner) {
-
 		var giftDefaults = ['flowers', 'chocolates', 'balloons', 'a framed picture', 'a stuffed animal', 'a new car', 'jewelry', 'a watch', 'a wink and a smile'];
 		var interests = ['music', 'movies', 'television', 'books', 'games'];
 		var friendInterests = [];
@@ -148,7 +185,6 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 			default:
 				return getRandomArrayValue(giftDefaults);
 		}
-
 	};
 
 	/**
@@ -156,7 +192,7 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 	 * @return {object} An object containing the details of the date
 	 */
 	var generateDate = function () {
-		var activityDefaults = ['bowling', 'skating', 'walk', 'dancing', 'museum', 'bar', 'movie theater', 'laser tag'];
+		var activityDefaults = ['bowling', 'skating', 'walk', 'dancing', 'museum', 'bar', 'movie theater'];
 
 		var restaurant = getLocationData(['restaurant', 'food']).then(function (restaurants) {
 			return getRandomArrayValue(restaurants).name;
@@ -179,7 +215,6 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 		});
 
 		return $q.all([restaurant, activity, partner]).then(function(locations) {
-			console.log(locations);
 			return partner.then(function(partner) {
 				date.partner = partner.data;
 				date.gift = getGift(partner.data);
@@ -204,8 +239,26 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 		return Math.floor(Math.random() * (max - min + 1)) + min;
 	}
 
+	/**
+	 * Returns the value of a randomly selected key in an array
+	 * @param  {array} arr Array from which to select a value
+	 */
 	function getRandomArrayValue(arr) {
 		return arr[ getRandomInt(0, arr.length - 1) ];
+	}
+
+	/**
+	 * Calculates a user's age given a properly formatted date of birth
+	 */
+	function getAge(birthday) {
+	    var today = new Date();
+	    var birthDate = new Date(birthday);
+	    var age = today.getFullYear() - birthDate.getFullYear();
+	    var m = today.getMonth() - birthDate.getMonth();
+	    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+	        age--;
+	    }
+	    return age;
 	}
 
 	return {
