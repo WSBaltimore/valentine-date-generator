@@ -75,7 +75,7 @@ app.factory('date', function ($http, firebaseAuth) {
 	 * @param {object} partner An object containing data about the user's selected partner
 	 */
 	var getGift = function (partner) {
-		console.log(partner);
+
 		var gift;
 		var giftText;
 
