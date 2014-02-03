@@ -1,10 +1,11 @@
 'use strict';
 
-app.controller('ResultsCtrl', function ($scope, $location, firebaseAuth, date) {
+app.controller('ResultsCtrl', function ($scope, $location, firebaseAuth, date, theDate) {
+	$scope.prefs = date.userPreferences;
+	$scope.date = theDate;
+	// date.generateDate().then(function(date) {
 
-	date.getGift().then(function(gift) {
-		console.log(gift);
-	});
+	// });
 
 	// Return to homepage on logout
 	$scope.$on("$firebaseSimpleLogin:logout", function(e, user) {

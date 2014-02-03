@@ -9,11 +9,11 @@ app.controller('StartCtrl', function ($scope, $location, firebaseAuth, date) {
 		},
 		{
 			'name': 'man',
-			'value': 'man'
+			'value': 'male'
 		},
 		{
 			'name': 'woman',
-			'value': 'woman'
+			'value': 'female'
 		}
 	];
 
