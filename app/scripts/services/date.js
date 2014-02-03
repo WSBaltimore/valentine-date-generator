@@ -63,7 +63,7 @@ app.factory('date', function ($http, firebaseAuth) {
 		var friendId = friends[ getRandomInt(0, friends.length - 1) ].id;
 
 		return firebaseAuth.getUser().then(function(user) {
-			return $http.get('https://graph.facebook.com/' + friendId + '?access_token=' + user.accessToken + '&fields=name,gender,age_range,favorite_athletes,favorite_teams,albums,television,music,movies,games,books').then(function(partner) {
+			return $http.get('https://graph.facebook.com/' + friendId + '?access_token=' + user.accessToken + '&fields=name,first_name,gender,age_range,favorite_athletes,favorite_teams,albums,television,music,movies,games,books').then(function(partner) {
 				console.log('retrieved partner data');
 				return partner;
 			});
@@ -76,7 +76,7 @@ app.factory('date', function ($http, firebaseAuth) {
 	 */
 	var getGift = function (partner) {
 
-		var giftDefaults = ['flowers', 'chocolates', 'balloons', 'a framed picture', 'a stuffed animal'];
+		var giftDefaults = ['flowers', 'chocolates', 'balloons', 'a framed picture', 'a stuffed animal', 'a new car', 'jewelry', 'a watch', 'a wink and a smile'];
 		var interests = ['music', 'movies', 'television', 'books', 'games'];
 		var friendInterests = [];
 
@@ -99,19 +99,19 @@ app.factory('date', function ($http, firebaseAuth) {
 		// user has media interests - pick a gift from their favorite medium
 		switch( randomInterest ) {
 			case 'books':
-				return 'a hardback copy of ' + interestName;
+				return 'a hardback copy of "' + interestName + '"';
 				break;
 			case 'games':
-				return 'a copy of ' + interestName;
+				return 'a copy of "' + interestName + '"';
 				break;
 			case 'movies':
-				return interestName + ' on DVD';
+				return '"' + interestName + '" on DVD';
 				break;
 			case 'music':
-				return 'tickets to a ' + interestName + ' concert';
+				return 'tickets to a "' + interestName + '" concert';
 				break;
 			case 'television':
-				return 'a ' + interestName + ' box set';
+				return 'a "' + interestName + '" box set';
 				break;
 			default:
 				return giftDefaults[ getRandomInt(0, giftDefaults.length - 1) ];
@@ -121,11 +121,10 @@ app.factory('date', function ($http, firebaseAuth) {
 
 	/**
 	 * Determines an appropriate restaurant to take the user's selected partner
-	 * @param {object} partner  An object containing data about the user's selected partner
 	 */
-	var getRestaurant = function (partner) {
-		// Use the user's location to find restaurants nearby
-		// userPreferences.location is the string to use with Google API
+	var getRestaurant = function () {
+		// find a restaurant nearby the user's location preference
+
 		return 'Gin Mill';
 	};
 
@@ -134,8 +133,10 @@ app.factory('date', function ($http, firebaseAuth) {
 	 * @param {object} partner  An object containing data about the user's selected partner
 	 */
 	var getActivity = function (partner) {
+		// Try taking your date...
+		var activityDefaults = ['bowling', 'skating', 'for a drive', 'on a romantic walk', 'dancing', 'to a museum', 'bar hopping', 'to a movie', 'to play laser tag'];
 
-		return 'Jumping Jacks';
+		return activityDefaults[ getRandomInt(0, activityDefaults.length - 1) ];
 	};
 
 	/**
