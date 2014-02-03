@@ -18,9 +18,14 @@ app.controller('StartCtrl', function ($scope, $location, firebaseAuth, date) {
 	];
 
 	$scope.userPreferences = {
-		location: '', // this should default to location provided by facebook
+		location: '',
 		gender: $scope.genderChoices[0]
 	};
+
+	// Set location
+	firebaseAuth.$getCurrentUser().then(function(data) {
+		$scope.userPreferences.location = data.location.name;
+	});
 
 	$scope.planDate = function() {
 		date.setUserPreferences($scope.userPreferences);

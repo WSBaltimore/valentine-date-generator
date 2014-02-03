@@ -60,7 +60,14 @@ app.factory('date', function ($http, firebaseAuth) {
 	 */
 	var getPartner = function (friends) {
 		// Just pick a random friend for now...
-		return friends[ getRandomInt(0, friends.length - 1) ];
+		var friendId = friends[ getRandomInt(0, friends.length - 1) ].id;
+
+		return firebaseAuth.getUser().then(function(user) {
+			return $http.get('https://graph.facebook.com/' + friendId + '?access_token=' + user.accessToken + '&fields=name,age_range,favorite_athletes,favorite_teams,albums,television,music,movies,games,books').then(function(partner) {
+				console.log('retrieved partner data');
+				return partner;
+			});
+		});
 	};
 
 	/**
@@ -147,12 +154,14 @@ app.factory('date', function ($http, firebaseAuth) {
 	 */
 	var generateDate = function () {
 		return getFriendsData().then(function(friends) {
-			date.partner = getPartner(friends);
-			date.gift = getGift(date.partner);
-			date.restaurant = getRestaurant(date.partner);
-			date.activity = getActivity(date.activity);
+			return getPartner(friends).then(function (partner) {
+				date.partner = partner.data;
+				date.gift = getGift(partner);
+				date.restaurant = getRestaurant(partner);
+				date.activity = getActivity(partner);
 
-			return date;
+				return date;
+			})
 		});
 	};
 
