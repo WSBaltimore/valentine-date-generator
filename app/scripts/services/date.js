@@ -1,6 +1,6 @@
 'use strict';
 
-app.factory('date', function ($http, firebaseAuth) {
+app.factory('date', function ($http, $q, firebaseAuth) {
 
 	var userPreferences = {
 		location: '',
@@ -14,6 +14,80 @@ app.factory('date', function ($http, firebaseAuth) {
 		gift: ''
 	};
 
+	////////////////////
+	// Data Requests //
+	////////////////////
+
+	/**
+	 * Get an object containing the user's login data
+	 * @return {object} A promise containing the user's simple login data
+	 */
+	var getUserData = function () {
+		return firebaseAuth.getUser().then(function(user) {
+			console.log('retrieved user data');
+			return user;
+		});
+	};
+
+	/**
+	 * Get an object containing the user's available Facebook data
+	 * @return {object} A promise containing the user's Facebook data
+	 */
+	var getFacebookData = function(user) {
+		return $http.get('https://graph.facebook.com/' + user.id + '?access_token=' + user.accessToken + '&fields=id,name,age_range,relationship_status,gender,location,significant_other,checkins,family,friends.fields(name,age_range,birthday,relationship_status,gender,significant_other,television.fields(name,id),movies.fields(name,id),games.fields(name,id),music.fields(id,name),books.fields(name,id))').then(function(facebook) {
+			console.log('retrieved facebook data');
+			return facebook.data;
+		});
+	};
+
+	/**
+	 * Determines an appropriate partner for a date based on user's preferences
+	 * @return {object} A promise containing the user's selected partner's data
+	 */
+	var getPartnerData = function (facebook) {
+		var friends = facebook.friends.data;
+
+		// Just pick a random friend for now...
+		var friendId = getRandomArrayValue(friends).id;
+
+		return firebaseAuth.getUser().then(function(user) {
+			return $http.get('https://graph.facebook.com/' + friendId + '?access_token=' + user.accessToken + '&fields=name,first_name,gender,age_range,favorite_athletes,favorite_teams,albums,television,music,movies,games,books').then(function(partner) {
+				console.log('retrieved partner data');
+				return partner;
+			});
+		});
+	};
+
+	var getLocationData = function (types, keyword) {
+		// user userPreferences.location to get geoencoded coordinates to be used on future location based queries
+		return $http.get('https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=' + userPreferences.location).then(function (location) {
+			var coords = location.data.results[0].geometry.location;
+			var service = new google.maps.places.PlacesService(document.getElementById('map'));
+			var request = {
+				location: new google.maps.LatLng(coords.lat,coords.lng),
+				radius: '8000'
+			};
+
+			if (types.length) request.types = types;
+			if (keyword) request.keyword = keyword;
+
+			var deferred = $q.defer();
+
+			service.nearbySearch(request, function (results, status) {
+				if (status == google.maps.places.PlacesServiceStatus.OK) {
+					console.log(results);
+					deferred.resolve(results);
+				}
+			});
+
+			return deferred.promise;
+		});
+	};
+
+	/////////////////////
+	// Normal Methods //
+	/////////////////////
+
 	/**
 	 * Sets the user's location and gender preferences
 	 * @param {object} prefs Accepts an object containing user's preferences
@@ -26,48 +100,6 @@ app.factory('date', function ($http, firebaseAuth) {
 				this[key] = value;
 			}
 		}, userPreferences);
-	};
-
-	/**
-	 * Get an object containing the user's available Facebook data
-	 * @return {object} Returns a promise
-	 */
-	var getFacebookData = function() {
-		return firebaseAuth.getUser().then(function(user) {
-			return $http.get('https://graph.facebook.com/' + user.id + '?access_token=' + user.accessToken + '&fields=id,name,age_range,relationship_status,gender,location,significant_other,checkins,family,friends.fields(name,age_range,birthday,relationship_status,gender,significant_other,television.fields(name,id),movies.fields(name,id),games.fields(name,id),music.fields(id,name),books.fields(name,id))').then(function(facebook) {
-				console.log('retrieved facebook data');
-				return facebook.data;
-			});
-		});
-	};
-
-	/**
-	 * Get an object containing the user's friends data from Facebook
-	 * @return {object}          A promise containing the user's friend data
-	 */
-	var getFriendsData = function (facebookData) {
-		var facebookData = facebookData || getFacebookData();
-
-		return facebookData.then(function(facebook) {
-			console.log('retrieved friend data');
-			return facebook.friends.data;
-		});
-	};
-
-	/**
-	 * Determines an appropriate partner for a date based on user's preferences
-	 * @return {object} A promise containing the user's selected partner's data
-	 */
-	var getPartner = function (friends) {
-		// Just pick a random friend for now...
-		var friendId = friends[ getRandomInt(0, friends.length - 1) ].id;
-
-		return firebaseAuth.getUser().then(function(user) {
-			return $http.get('https://graph.facebook.com/' + friendId + '?access_token=' + user.accessToken + '&fields=name,first_name,gender,age_range,favorite_athletes,favorite_teams,albums,television,music,movies,games,books').then(function(partner) {
-				console.log('retrieved partner data');
-				return partner;
-			});
-		});
 	};
 
 	/**
@@ -89,12 +121,12 @@ app.factory('date', function ($http, firebaseAuth) {
 
 		// user has no media interests, fall back to defaults
 		if ( !friendInterests.length ) {
-			return giftDefaults[ getRandomInt(0, giftDefaults.length - 1) ];
+			return getRandomArrayValue(giftDefaults);
 		}
 
-		var randomInterest = friendInterests[ getRandomInt(0, friendInterests.length - 1) ]; // string of interest type eg. 'movies'
+		var randomInterest = getRandomArrayValue(friendInterests); // string of interest type eg. 'movies'
 		var interestData = partner[randomInterest].data; // array of objects containing individual likes eg. [0]object.name = 'lord of the rings'
-		var interestName = interestData[ getRandomInt(0, interestData.length - 1) ].name; console.log(interestName); // string of the selected 'like' eg. 'top gun'
+		var interestName = getRandomArrayValue(interestData).name; console.log(interestName); // string of the selected 'like' eg. 'top gun'
 
 		// user has media interests - pick a gift from their favorite medium
 		switch( randomInterest ) {
@@ -114,29 +146,9 @@ app.factory('date', function ($http, firebaseAuth) {
 				return 'a "' + interestName + '" box set';
 				break;
 			default:
-				return giftDefaults[ getRandomInt(0, giftDefaults.length - 1) ];
+				return getRandomArrayValue(giftDefaults);
 		}
 
-	};
-
-	/**
-	 * Determines an appropriate restaurant to take the user's selected partner
-	 */
-	var getRestaurant = function () {
-		// find a restaurant nearby the user's location preference
-
-		return 'Gin Mill';
-	};
-
-	/**
-	 * Determines an appropriate activity to do with the user's selected partner
-	 * @param {object} partner  An object containing data about the user's selected partner
-	 */
-	var getActivity = function (partner) {
-		// Try taking your date...
-		var activityDefaults = ['bowling', 'skating', 'for a drive', 'on a romantic walk', 'dancing', 'to a museum', 'bar hopping', 'to a movie', 'to play laser tag'];
-
-		return activityDefaults[ getRandomInt(0, activityDefaults.length - 1) ];
 	};
 
 	/**
@@ -144,17 +156,45 @@ app.factory('date', function ($http, firebaseAuth) {
 	 * @return {object} An object containing the details of the date
 	 */
 	var generateDate = function () {
-		return getFriendsData().then(function(friends) {
-			return getPartner(friends).then(function (partner) {
+		var activityDefaults = ['bowling', 'skating', 'walk', 'dancing', 'museum', 'bar', 'movie theater', 'laser tag'];
+
+		var restaurant = getLocationData(['restaurant', 'food']).then(function (restaurants) {
+			return getRandomArrayValue(restaurants).name;
+		});
+
+		var activity = getLocationData([], getRandomArrayValue(activityDefaults)).then(function (activities) {
+			return getRandomArrayValue(activities).name;
+		});
+
+		var user = getUserData().then(function (user) {
+			return user;
+		});
+
+		var facebook = user.then(function (user) {
+			return getFacebookData(user);
+		});
+
+		var partner = facebook.then(function (facebook) {
+			return getPartnerData(facebook);
+		});
+
+		return $q.all([restaurant, activity, partner]).then(function(locations) {
+			console.log(locations);
+			return partner.then(function(partner) {
 				date.partner = partner.data;
 				date.gift = getGift(partner.data);
-				date.restaurant = getRestaurant(partner.data);
-				date.activity = getActivity(partner.data);
+				date.restaurant = locations[0];
+				date.activity = locations[1];
+				date.pronoun = partner.data.gender === 'male' ? 'him' : 'her';
 
 				return date;
 			});
 		});
 	};
+
+	///////////////////////
+	// Helper Functions //
+	///////////////////////
 
 	/**
 	 * Returns a random integer between min and max
@@ -164,16 +204,17 @@ app.factory('date', function ($http, firebaseAuth) {
 		return Math.floor(Math.random() * (max - min + 1)) + min;
 	}
 
+	function getRandomArrayValue(arr) {
+		return arr[ getRandomInt(0, arr.length - 1) ];
+	}
+
 	return {
 		getFacebookData: getFacebookData,
-		getFriendsData: getFriendsData,
 		setUserPreferences: setUserPreferences,
-		getPartner: getPartner,
+		getPartnerData: getPartnerData,
 		getGift: getGift,
-		getRestaurant: getRestaurant,
-		getActivity: getActivity,
 		generateDate: generateDate,
 		userPreferences: userPreferences,
 		date: date
-	};
+	}
 });
