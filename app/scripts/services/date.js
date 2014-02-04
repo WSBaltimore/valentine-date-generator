@@ -34,7 +34,7 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 	 * @return {object} A promise containing the user's Facebook data
 	 */
 	var getFacebookData = function(user) {
-		return $http.get('https://graph.facebook.com/' + user.id + '?access_token=' + user.accessToken + '&fields=id,name,age_range,relationship_status,gender,location,significant_other,checkins,family,friends.fields(name,age_range,birthday,relationship_status,gender,significant_other,television.fields(name,id),movies.fields(name,id),games.fields(name,id),music.fields(id,name),books.fields(name,id))').then(function(facebook) {
+		return $http.get('https://graph.facebook.com/' + user.id + '?access_token=' + user.accessToken + '&fields=id,name,age_range,relationship_status,gender,location,significant_other,checkins,family,friends.fields(name,birthday,relationship_status,gender,significant_other,television.fields(name,id),movies.fields(name,id),games.fields(name,id),music.fields(id,name),books.fields(name,id))').then(function(facebook) {
 			console.log('retrieved facebook data');
 			return facebook.data;
 		});
@@ -47,7 +47,7 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 	var getPartnerData = function (facebook) {
 		var family = [];
 		var friends = facebook.friends.data;
-		var available_friends = [];
+		var availableFriends = [];
 		var valid = true;
 
 		// setup array of family member IDs
@@ -83,13 +83,13 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 			}
 
 			if( valid ) this.push( friend );
-		}, available_friends);
+		}, availableFriends);
 
 		// Just pick a random friend for now...
-		var friendId = available_friends[ getRandomInt(0, available_friends.length - 1) ].id;
+		var friendId = getRandomArrayValue(availableFriends).id;
 
 		return firebaseAuth.getUser().then(function(user) {
-			return $http.get('https://graph.facebook.com/' + friendId + '?access_token=' + user.accessToken + '&fields=name,first_name,gender,age_range,favorite_athletes,favorite_teams,albums,television,music,movies,games,books').then(function(partner) {
+			return $http.get('https://graph.facebook.com/' + friendId + '?access_token=' + user.accessToken + '&fields=name,first_name,gender,favorite_athletes,favorite_teams,albums,television,music,movies,games,books').then(function(partner) {
 				console.log('retrieved partner data');
 				return partner;
 			});
@@ -192,14 +192,15 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 	 * @return {object} An object containing the details of the date
 	 */
 	var generateDate = function () {
-		var activityDefaults = ['bowling', 'skating', 'walk', 'dancing', 'museum', 'bar', 'movie theater'];
+		var activityKeywords = ['bowling', 'skating', 'walk', 'dancing', 'museum', 'bar', 'movie theater'];
+		var activityTypes = ['amusement_park', 'aquarium', 'art_gallery', 'bar', 'book_store', 'bowling_alley', 'cafe', 'casino', 'movie_theater', 'museum', 'night_club', 'park', 'spa', 'zoo'];
 
-		var restaurant = getLocationData(['restaurant', 'food']).then(function (restaurants) {
-			return getRandomArrayValue(restaurants).name;
+		var activity = getLocationData(activityTypes, getRandomArrayValue(activityKeywords)).then(function (activities) {
+			return getRandomArrayValue(activities).name;
 		});
 
-		var activity = getLocationData([], getRandomArrayValue(activityDefaults)).then(function (activities) {
-			return getRandomArrayValue(activities).name;
+		var restaurant = getLocationData(['restaurant', 'cafe', 'bar']).then(function (restaurants) {
+			return getRandomArrayValue(restaurants).name;
 		});
 
 		var user = getUserData().then(function (user) {

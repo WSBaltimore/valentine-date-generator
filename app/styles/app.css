@@ -1,4 +1,5 @@
 @import url(../bower_components/normalize-css/normalize.css);
+@import url(../bower_components/angular-dropdowns/css/dropdowns.css);
 @import url(../bower_components/animate-less/css/animate.css);
 @font-face {
   font-family: 'edmondsans_regular';
@@ -69,6 +70,43 @@ body {
 .btn.btn-lg {
   font-size: 36px;
 }
+input[type="text"] {
+  background: transparent;
+  border: 0 none;
+  border-bottom: 3px solid #9c0505;
+  font: 62px/1em 'edmondsans_regular', Helvetica, sans-serif;
+  outline: none;
+}
+input[type="text"]:-moz-placeholder {
+  color: #9c0505;
+}
+input[type="text"]:-ms-input-placeholder {
+  color: #9c0505;
+}
+input[type="text"]::-webkit-input-placeholder {
+  color: #9c0505;
+}
+.wrap-dd-select {
+  background: transparent;
+  border: 0 none;
+  border-bottom: 3px solid #9c0505;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  color: #9c0505;
+  display: inline-block;
+  padding: 0;
+  width: auto;
+}
+.wrap-dd-select:after {
+  display: none;
+}
+.wrap-dd-select .dropdown {
+  margin: 0;
+}
 .page-login {
   padding: 190px 0 0;
 }
@@ -80,4 +118,11 @@ body {
 .page-login h1 strong {
   font: 94px/2em 'lavanderia_regular', Helvetica, sans-serif;
   text-transform: none;
+}
+.page-start {
+  padding: 190px 0 0;
+}
+.page-start .statement {
+  font: 62px/1em 'edmondsans_regular', Helvetica, sans-serif;
+  padding: 0 165px;
 }

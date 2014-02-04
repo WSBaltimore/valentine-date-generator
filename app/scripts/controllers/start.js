@@ -2,6 +2,8 @@
 
 app.controller('StartCtrl', function ($scope, $location, firebaseAuth, date) {
 
+	$scope.firebaseAuth = firebaseAuth;
+
 	$scope.genderChoices = [
 		{
 			'name': 'man or a woman',

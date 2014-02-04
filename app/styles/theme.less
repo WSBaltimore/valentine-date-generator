@@ -11,9 +11,23 @@ body { background: url(../images/bg.png) top center repeat; color: #fff; font: 1
 	&.btn-lg { font-size: 36px; }
 }
 
+input[type="text"] { .placeholder(@dark-red); background: transparent; border: 0 none; border-bottom: 3px solid @dark-red; font: 62px/1em @font-family-sans; outline: none; }
+.wrap-dd-select { background: transparent; border: 0 none; border-bottom: 3px solid @dark-red; .border-radius(0); .box-shadow(none); color: @dark-red; display: inline-block; padding: 0; width: auto;
+	&:after { display: none; }
+	.dropdown { margin: 0; .border-radius(10px;)
+		li {
+			a {}
+		}
+	}
+}
+
 // Modules
 .page-login { padding: 190px 0 0;
 	h1 { font-size: 28px; margin: 0 0 60px; text-transform: uppercase;
 		strong { font: 94px/2em @font-family-script; text-transform: none; }
 	}
+}
+
+.page-start { padding: 190px 0 0;
+	.statement { font: 62px/1em @font-family-sans; padding: 0 165px; }
 }
