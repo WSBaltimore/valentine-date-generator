@@ -6,16 +6,16 @@ app.controller('StartCtrl', function ($scope, $location, firebaseAuth, date) {
 
 	$scope.genderChoices = [
 		{
-			'name': 'man or a woman',
-			'value': 'both'
-		},
-		{
-			'name': 'man',
+			'text': 'man',
 			'value': 'male'
 		},
 		{
-			'name': 'woman',
+			'text': 'woman',
 			'value': 'female'
+		},
+		{
+			'text': 'man or a woman',
+			'value': 'both'
 		}
 	];
 
