@@ -1,27 +1,32 @@
 'use strict';
 
 app.controller('StartCtrl', function ($scope, $location, firebaseAuth, date) {
-
 	$scope.firebaseAuth = firebaseAuth;
-
 	$scope.genderChoices = [
-		{
-			'text': 'man',
-			'value': 'male'
-		},
-		{
-			'text': 'woman',
-			'value': 'female'
-		},
 		{
 			'text': 'man or a woman',
 			'value': 'both'
+		}, {
+			'text': 'man',
+			'value': 'male'
+		}, {
+			'text': 'woman',
+			'value': 'female'
 		}
 	];
 
+	$scope.selectedGender = {
+		text: $scope.genderChoices[0].text,
+		value: $scope.genderChoices[0].value
+	};
+
 	$scope.userPreferences = {
 		location: '',
-		gender: $scope.genderChoices[0]
+		gender: $scope.genderChoices[0].value
+	};
+
+	$scope.updateUserPrefs = function() {
+		$scope.userPreferences.gender = $scope.selectedGender.value;
 	};
 
 	// Set location
