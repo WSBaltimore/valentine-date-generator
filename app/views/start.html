@@ -1,13 +1,17 @@
 <div class="main-content page-start">
 	<div class="centered">
+		<div class="visual">
+			<div class="figure figure-1 male"></div>
+			<div class="figure figure-2 female"></div>
+		</div>
 		<div class="statement">
-			I want to take a
+			I would like to take a
 			<div dropdown-select="genderChoices" dropdown-model="selectedGender" dropdown-onchange="updateUserPrefs()"></div>
 			on a date in
 			<span class="content-editable" ng-model="userPreferences.location" contenteditable strip-br="true">{{userPreferences.location}}<span>
 		</div>
 		<a class="btn btn-lg" ng-href="" ng-click="planDate()">Plan My Date</a>
-		<a class="btn btn-lg" ng-href="" ng-click="firebaseAuth.$logout()">Logout</a>
+		<!-- <a class="btn btn-lg" ng-href="" ng-click="firebaseAuth.$logout()">Logout</a> -->
 	</div>
 	<div id="map"></div>
 </div>

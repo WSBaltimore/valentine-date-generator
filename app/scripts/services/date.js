@@ -2,10 +2,7 @@
 
 app.factory('date', function ($http, $q, firebaseAuth) {
 
-	var userPreferences = {
-		// location: '',
-		// gender: ''
-	};
+	var userPreferences = {};
 
 	var date = {
 		partner: {},
@@ -23,8 +20,9 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 	 * @return {object} A promise containing the user's simple login data
 	 */
 	var getUserData = function () {
-		return firebaseAuth.getUser().then(function(user) {
+		return firebaseAuth.$getCurrentUser().then(function(user) {
 			console.log('retrieved user data');
+			console.log(user);
 			return user;
 		});
 	};
@@ -36,6 +34,7 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 	var getFacebookData = function(user) {
 		return $http.get('https://graph.facebook.com/' + user.id + '?access_token=' + user.accessToken + '&fields=id,name,age_range,relationship_status,gender,location,significant_other,checkins,family,friends.fields(name,birthday,relationship_status,gender,significant_other,television.fields(name,id),movies.fields(name,id),games.fields(name,id),music.fields(id,name),books.fields(name,id))').then(function(facebook) {
 			console.log('retrieved facebook data');
+			console.log(facebook.data);
 			return facebook.data;
 		});
 	};
@@ -85,14 +84,13 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 			if( valid ) this.push( friend );
 		}, availableFriends);
 
-		console.log(availableFriends);
-
 		// Just pick a random friend for now...
 		var friendId = getRandomArrayValue(availableFriends).id;
 
-		return firebaseAuth.getUser().then(function(user) {
+		return firebaseAuth.$getCurrentUser().then(function(user) {
 			return $http.get('https://graph.facebook.com/' + friendId + '?access_token=' + user.accessToken + '&fields=name,first_name,gender,favorite_athletes,favorite_teams,albums,television,music,movies,games,books').then(function(partner) {
 				console.log('retrieved partner data');
+				console.log(partner);
 				return partner;
 			});
 		});
@@ -100,27 +98,37 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 
 	var getLocationData = function (types, keyword) {
 		// user userPreferences.location to get geoencoded coordinates to be used on future location based queries
-		return $http.get('https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=' + userPreferences.location).then(function (location) {
-			var coords = location.data.results[0].geometry.location;
-			var service = new google.maps.places.PlacesService(document.getElementById('map'));
-			var request = {
-				location: new google.maps.LatLng(coords.lat,coords.lng),
-				radius: '8000'
-			};
+		return $http.get('https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=' + userPreferences.location).success(function (location) {
 
-			if (types.length) request.types = types;
-			if (keyword) request.keyword = keyword;
+			if ( location.status === 'OK' ) {
+				var deferred = $q.defer();
+				var coords = location.results[0].geometry.location;
+				var service = new google.maps.places.PlacesService(document.getElementById('map'));
+				var request = {};
+				request.location = new google.maps.LatLng(coords.lat, coords.lng);
+				request.radius = '8000';
+				if (types.length) request.types = types;
+				if (keyword) request.keyword = keyword;
 
-			var deferred = $q.defer();
+				service.nearbySearch(request, function(results, status) {
+					if (status == google.maps.places.PlacesServiceStatus.OK) {
+						console.log('retrieved location data');
+						deferred.resolve(results);
+					} else {
+						console.log('no location data!');
+						deferred.reject(status);
+					}
+				});
 
-			service.nearbySearch(request, function (results, status) {
-				if (status == google.maps.places.PlacesServiceStatus.OK) {
-					console.log(results);
-					deferred.resolve(results);
-				}
-			});
+				return deferred.promise;
+			}
 
-			return deferred.promise;
+			////////////////////////////////////////////////////////////////////////////
+			// TODO: What the hell do we return if we can't query the location???? //
+			////////////////////////////////////////////////////////////////////////////
+
+		}).error(function(error) {
+			console.log('google cannot find that place!');
 		});
 	};
 
@@ -140,8 +148,6 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 				this[key] = value;
 			}
 		}, userPreferences);
-
-		console.log(userPreferences);
 	};
 
 	/**
@@ -149,6 +155,8 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 	 * @param {object} partner An object containing data about the user's selected partner
 	 */
 	var getGift = function (partner) {
+		console.log('selecting gift');
+
 		var giftDefaults = ['flowers', 'chocolates', 'balloons', 'a framed picture', 'a stuffed animal', 'a new car', 'jewelry', 'a watch', 'a wink and a smile'];
 		var interests = ['music', 'movies', 'television', 'books', 'games'];
 		var friendInterests = [];
@@ -167,7 +175,7 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 
 		var randomInterest = getRandomArrayValue(friendInterests); // string of interest type eg. 'movies'
 		var interestData = partner[randomInterest].data; // array of objects containing individual likes eg. [0]object.name = 'lord of the rings'
-		var interestName = getRandomArrayValue(interestData).name; console.log(interestName); // string of the selected 'like' eg. 'top gun'
+		var interestName = getRandomArrayValue(interestData).name; // string of the selected 'like' eg. 'top gun'
 
 		// user has media interests - pick a gift from their favorite medium
 		switch( randomInterest ) {
@@ -197,18 +205,35 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 	 */
 	var generateDate = function () {
 
-		console.log(userPreferences);
+		console.log('generating date...');
+
+		var restaurantDefaults = ['a steak restaurant', 'an Italian restaurant', 'a Chinese restaurant'];
+		var activityDefaults = ['a fun bar', 'a skating rink', 'a romantic spot', 'a cool museum', 'a trendy cafe'];
 
 		var activityKeywords = ['bowling', 'skating', 'walk', 'dancing', 'museum', 'bar', 'movie theater'];
 		var activityTypes = ['amusement_park', 'aquarium', 'art_gallery', 'bar', 'book_store', 'bowling_alley', 'cafe', 'casino', 'movie_theater', 'museum', 'night_club', 'park', 'spa', 'zoo'];
 
 		// Google
 		var activity = getLocationData(activityTypes, getRandomArrayValue(activityKeywords)).then(function (activities) {
-			return getRandomArrayValue(activities).name;
+			console.log(activities);
+			if ( activities.data.status === 'OK' ) {
+				return getRandomArrayValue(activities.data.results).name;
+			}
+			return getRandomArrayValue(activityDefaults);
+		}, function(data, status, headers, config) {
+			console.log('defaulting to generic activity list');
+			return getRandomArrayValue(activityDefaults);
 		});
 
 		var restaurant = getLocationData(['restaurant', 'cafe', 'bar']).then(function (restaurants) {
-			return getRandomArrayValue(restaurants).name;
+			console.log(restaurants);
+			if ( restaurants.data.status === 'OK' ) {
+				getRandomArrayValue(restaurants.data.results).name;
+			}
+			return getRandomArrayValue(restaurantDefaults);
+		}, function (data, status, headers, config) {
+			console.log('defaulting to generic restaurant list');
+			return getRandomArrayValue(restaurantDefaults);
 		});
 
 

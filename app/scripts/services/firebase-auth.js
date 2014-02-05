@@ -11,15 +11,5 @@ app.factory('firebaseAuth', function ($http, $firebaseSimpleLogin) {
 		});
 	};
 
-	auth.logout = function () {
-		auth.$logout();
-	};
-
-	auth.getUser = function () {
-		return auth.$getCurrentUser().then(function(user) {
-			return user;
-		});
-	};
-
 	return auth;
 });
