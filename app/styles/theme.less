@@ -11,9 +11,29 @@ body { background: url(../images/bg.png) top center repeat; color: #fff; font: 1
 	&.btn-lg { font-size: 36px; }
 }
 
+.wrap-dd-select { background: transparent; border: 0 none; border-bottom: 3px solid @dark-red; .border-radius(0); .box-shadow(none); color: @dark-red; display: inline-block; font-weight: normal; padding: 0; width: auto;
+	&:after { display: none; }
+	&.active {
+		.dropdown { visibility: visible; }
+	}
+	.dropdown { .border-radius(10px); left: 50%; margin: 8px 0 0 -250px; width: 500px; overflow: 0; visibility: hidden;
+		&:before,
+		&:after { border-width: 0 16px 16px 16px; right: 50%; margin: 0 -8px 0 0; }
+		li {
+			a { color: @dark-red; font-size: 48px; }
+		}
+	}
+}
+
 // Modules
 .page-login { padding: 190px 0 0;
 	h1 { font-size: 28px; margin: 0 0 60px; text-transform: uppercase;
 		strong { font: 94px/2em @font-family-script; text-transform: none; }
+	}
+}
+
+.page-start { padding: 190px 0 0;
+	.statement { font: 62px/1em @font-family-sans; margin: 0 0 60px; padding: 0 165px;
+		.content-editable { background: transparent; border: 0 none; border-bottom: 3px solid @dark-red; color: @dark-red; display: inline-block; font: 62px/1em @font-family-sans; outline: none; min-width: 100px; }
 	}
 }

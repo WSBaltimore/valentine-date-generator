@@ -1,4 +1,5 @@
 @import url(../bower_components/normalize-css/normalize.css);
+@import url(../bower_components/angular-dropdowns/css/dropdowns.css);
 @import url(../bower_components/animate-less/css/animate.css);
 @font-face {
   font-family: 'edmondsans_regular';
@@ -69,6 +70,48 @@ body {
 .btn.btn-lg {
   font-size: 36px;
 }
+.wrap-dd-select {
+  background: transparent;
+  border: 0 none;
+  border-bottom: 3px solid #9c0505;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  color: #9c0505;
+  display: inline-block;
+  font-weight: normal;
+  padding: 0;
+  width: auto;
+}
+.wrap-dd-select:after {
+  display: none;
+}
+.wrap-dd-select.active .dropdown {
+  visibility: visible;
+}
+.wrap-dd-select .dropdown {
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  left: 50%;
+  margin: 8px 0 0 -250px;
+  width: 500px;
+  overflow: 0;
+  visibility: hidden;
+}
+.wrap-dd-select .dropdown:before,
+.wrap-dd-select .dropdown:after {
+  border-width: 0 16px 16px 16px;
+  right: 50%;
+  margin: 0 -8px 0 0;
+}
+.wrap-dd-select .dropdown li a {
+  color: #9c0505;
+  font-size: 48px;
+}
 .page-login {
   padding: 190px 0 0;
 }
@@ -80,4 +123,22 @@ body {
 .page-login h1 strong {
   font: 94px/2em 'lavanderia_regular', Helvetica, sans-serif;
   text-transform: none;
+}
+.page-start {
+  padding: 190px 0 0;
+}
+.page-start .statement {
+  font: 62px/1em 'edmondsans_regular', Helvetica, sans-serif;
+  margin: 0 0 60px;
+  padding: 0 165px;
+}
+.page-start .statement .content-editable {
+  background: transparent;
+  border: 0 none;
+  border-bottom: 3px solid #9c0505;
+  color: #9c0505;
+  display: inline-block;
+  font: 62px/1em 'edmondsans_regular', Helvetica, sans-serif;
+  outline: none;
+  min-width: 100px;
 }

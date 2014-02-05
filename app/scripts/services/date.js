@@ -3,8 +3,8 @@
 app.factory('date', function ($http, $q, firebaseAuth) {
 
 	var userPreferences = {
-		location: '',
-		gender: ''
+		// location: '',
+		// gender: ''
 	};
 
 	var date = {
@@ -34,7 +34,7 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 	 * @return {object} A promise containing the user's Facebook data
 	 */
 	var getFacebookData = function(user) {
-		return $http.get('https://graph.facebook.com/' + user.id + '?access_token=' + user.accessToken + '&fields=id,name,age_range,relationship_status,gender,location,significant_other,checkins,family,friends.fields(name,age_range,birthday,relationship_status,gender,significant_other,television.fields(name,id),movies.fields(name,id),games.fields(name,id),music.fields(id,name),books.fields(name,id))').then(function(facebook) {
+		return $http.get('https://graph.facebook.com/' + user.id + '?access_token=' + user.accessToken + '&fields=id,name,age_range,relationship_status,gender,location,significant_other,checkins,family,friends.fields(name,birthday,relationship_status,gender,significant_other,television.fields(name,id),movies.fields(name,id),games.fields(name,id),music.fields(id,name),books.fields(name,id))').then(function(facebook) {
 			console.log('retrieved facebook data');
 			return facebook.data;
 		});
@@ -47,12 +47,12 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 	var getPartnerData = function (facebook) {
 		var family = [];
 		var friends = facebook.friends.data;
-		var available_friends = [];
+		var availableFriends = [];
 		var valid = true;
 
 		// setup array of family member IDs
-		angular.forEach(facebook.family.data, function(family_member, key) {
-			this.push( family_member.id );
+		angular.forEach(facebook.family.data, function(familyMember, key) {
+			this.push( familyMember.id );
 		}, family);
 
 		angular.forEach(friends, function(friend, key) {
@@ -65,10 +65,10 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 
 			// filter by gender
 			if( friend.hasOwnProperty('gender') ) {
-				if( userPreferences.gender.value != 'both' && userPreferences.gender.value != friend.gender ) {
+				if( userPreferences.gender !== 'both' && userPreferences.gender !== friend.gender ) {
 					valid = false;
 				}
-			} else if( userPreferences.gender.value != 'both' ) {
+			} else if ( userPreferences.gender !== 'both' ) {
 				valid = false;
 			}
 
@@ -83,13 +83,15 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 			}
 
 			if( valid ) this.push( friend );
-		}, available_friends);
+		}, availableFriends);
+
+		console.log(availableFriends);
 
 		// Just pick a random friend for now...
-		var friendId = available_friends[ getRandomInt(0, available_friends.length - 1) ].id;
+		var friendId = getRandomArrayValue(availableFriends).id;
 
 		return firebaseAuth.getUser().then(function(user) {
-			return $http.get('https://graph.facebook.com/' + friendId + '?access_token=' + user.accessToken + '&fields=name,first_name,gender,age_range,favorite_athletes,favorite_teams,albums,television,music,movies,games,books').then(function(partner) {
+			return $http.get('https://graph.facebook.com/' + friendId + '?access_token=' + user.accessToken + '&fields=name,first_name,gender,favorite_athletes,favorite_teams,albums,television,music,movies,games,books').then(function(partner) {
 				console.log('retrieved partner data');
 				return partner;
 			});
@@ -138,6 +140,8 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 				this[key] = value;
 			}
 		}, userPreferences);
+
+		console.log(userPreferences);
 	};
 
 	/**
@@ -192,16 +196,23 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 	 * @return {object} An object containing the details of the date
 	 */
 	var generateDate = function () {
-		var activityDefaults = ['bowling', 'skating', 'walk', 'dancing', 'museum', 'bar', 'movie theater'];
 
-		var restaurant = getLocationData(['restaurant', 'food']).then(function (restaurants) {
-			return getRandomArrayValue(restaurants).name;
-		});
+		console.log(userPreferences);
 
-		var activity = getLocationData([], getRandomArrayValue(activityDefaults)).then(function (activities) {
+		var activityKeywords = ['bowling', 'skating', 'walk', 'dancing', 'museum', 'bar', 'movie theater'];
+		var activityTypes = ['amusement_park', 'aquarium', 'art_gallery', 'bar', 'book_store', 'bowling_alley', 'cafe', 'casino', 'movie_theater', 'museum', 'night_club', 'park', 'spa', 'zoo'];
+
+		// Google
+		var activity = getLocationData(activityTypes, getRandomArrayValue(activityKeywords)).then(function (activities) {
 			return getRandomArrayValue(activities).name;
 		});
 
+		var restaurant = getLocationData(['restaurant', 'cafe', 'bar']).then(function (restaurants) {
+			return getRandomArrayValue(restaurants).name;
+		});
+
+
+		// Facebook
 		var user = getUserData().then(function (user) {
 			return user;
 		});
@@ -214,16 +225,14 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 			return getPartnerData(facebook);
 		});
 
-		return $q.all([restaurant, activity, partner]).then(function(locations) {
-			return partner.then(function(partner) {
-				date.partner = partner.data;
-				date.gift = getGift(partner.data);
-				date.restaurant = locations[0];
-				date.activity = locations[1];
-				date.pronoun = partner.data.gender === 'male' ? 'him' : 'her';
+		return $q.all([restaurant, activity, partner]).then(function(promises) {
+			date.restaurant = promises[0];
+			date.activity = promises[1];
+			date.partner = promises[2].data;
+			date.gift = getGift(promises[2].data);
+			date.pronoun = promises[2].data.gender === 'male' ? 'him' : 'her';
 
-				return date;
-			});
+			return date;
 		});
 	};
 
