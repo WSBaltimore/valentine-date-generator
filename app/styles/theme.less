@@ -2,16 +2,23 @@
 @dark-red: #9c0505;
 
 // Global
-body { background: url(../images/bg.png) top center repeat; color: #fff; font: 16px/1em @font-family-sans; }
-.container {}
-.main-content { text-align: center; margin: 0 auto; width: 960px; }
+html { width: 100%; height: 100%; }
+body { background: url(../images/bg.png) top center repeat; color: #fff; font: 16px/1em @font-family-sans; width: 100%; height: 100%; min-height: 100%; }
+.container { width: 100%; height: 100%; }
+.main-content { text-align: center; width: 100%; height: 100%;
+	&:before { content: ''; display: inline-block; margin-right: -0.25em; height: 100%; vertical-align: middle; }
+	.centered { display: inline-block; vertical-align: middle; width: 50%; }
+	.statement { font: 62px/1em @font-family-sans; margin: 0 0 60px; width: 100%; }
+}
 
+// Buttons
 .btn { background: @dark-red; border: 0 none; color: #fff; display: inline-block; padding: 40px 50px; text-transform: uppercase; text-align: center;
 	&:hover { cursor: pointer; text-decoration: none; }
 	&.btn-lg { font-size: 36px; }
 }
 
-.wrap-dd-select { background: transparent; border: 0 none; border-bottom: 3px solid @dark-red; .border-radius(0); .box-shadow(none); color: @dark-red; display: inline-block; font-weight: normal; padding: 0; width: auto;
+// Dropdown
+.wrap-dd-select { background: transparent; border: 0 none; border-bottom: 3px solid @dark-red; .border-radius(0); .box-shadow(none); color: @dark-red; display: inline-block; font-weight: normal; margin: 0 0 0.25em; padding: 0; width: auto;
 	&:after { display: none; }
 	&.active {
 		.dropdown { visibility: visible; }
@@ -20,20 +27,28 @@ body { background: url(../images/bg.png) top center repeat; color: #fff; font: 1
 		&:before,
 		&:after { border-width: 0 16px 16px 16px; right: 50%; margin: 0 -8px 0 0; }
 		li {
+			&:hover {
+				a { background: lighten(@dark-red, 60%); }
+			}
 			a { color: @dark-red; font-size: 48px; }
 		}
 	}
 }
 
 // Modules
-.page-login { padding: 190px 0 0;
-	h1 { font-size: 28px; margin: 0 0 60px; text-transform: uppercase;
-		strong { font: 94px/2em @font-family-script; text-transform: none; }
+.page-login {
+	h1 { margin: 0 0 60px;
+		span { display: inline-block; font: 24px/1em @font-family-sans; margin: 0 0 1.25em; text-transform: uppercase; }
+		strong { font: 72px/1em @font-family-script; text-transform: none; }
 	}
 }
 
-.page-start { padding: 190px 0 0;
-	.statement { font: 62px/1em @font-family-sans; margin: 0 0 60px; padding: 0 165px;
+.page-start {
+	.statement {
 		.content-editable { background: transparent; border: 0 none; border-bottom: 3px solid @dark-red; color: @dark-red; display: inline-block; font: 62px/1em @font-family-sans; outline: none; min-width: 100px; }
 	}
+}
+
+.page-results { text-align: center;
+	.statement { font-size: 36px; line-height: 1.5em; }
 }

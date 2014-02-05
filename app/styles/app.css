@@ -44,15 +44,43 @@ Mixins
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
+html {
+  width: 100%;
+  height: 100%;
+}
 body {
   background: url(../images/bg.png) top center repeat;
   color: #fff;
   font: 16px/1em 'edmondsans_regular', Helvetica, sans-serif;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+}
+.container {
+  width: 100%;
+  height: 100%;
 }
 .main-content {
   text-align: center;
-  margin: 0 auto;
-  width: 960px;
+  width: 100%;
+  height: 100%;
+}
+.main-content:before {
+  content: '';
+  display: inline-block;
+  margin-right: -0.25em;
+  height: 100%;
+  vertical-align: middle;
+}
+.main-content .centered {
+  display: inline-block;
+  vertical-align: middle;
+  width: 50%;
+}
+.main-content .statement {
+  font: 62px/1em 'edmondsans_regular', Helvetica, sans-serif;
+  margin: 0 0 60px;
+  width: 100%;
 }
 .btn {
   background: #9c0505;
@@ -83,6 +111,7 @@ body {
   color: #9c0505;
   display: inline-block;
   font-weight: normal;
+  margin: 0 0 0.25em;
   padding: 0;
   width: auto;
 }
@@ -108,29 +137,25 @@ body {
   right: 50%;
   margin: 0 -8px 0 0;
 }
+.wrap-dd-select .dropdown li:hover a {
+  background: #fed5d5;
+}
 .wrap-dd-select .dropdown li a {
   color: #9c0505;
   font-size: 48px;
 }
-.page-login {
-  padding: 190px 0 0;
-}
 .page-login h1 {
-  font-size: 28px;
   margin: 0 0 60px;
+}
+.page-login h1 span {
+  display: inline-block;
+  font: 24px/1em 'edmondsans_regular', Helvetica, sans-serif;
+  margin: 0 0 1.25em;
   text-transform: uppercase;
 }
 .page-login h1 strong {
-  font: 94px/2em 'lavanderia_regular', Helvetica, sans-serif;
+  font: 72px/1em 'lavanderia_regular', Helvetica, sans-serif;
   text-transform: none;
-}
-.page-start {
-  padding: 190px 0 0;
-}
-.page-start .statement {
-  font: 62px/1em 'edmondsans_regular', Helvetica, sans-serif;
-  margin: 0 0 60px;
-  padding: 0 165px;
 }
 .page-start .statement .content-editable {
   background: transparent;
@@ -141,4 +166,11 @@ body {
   font: 62px/1em 'edmondsans_regular', Helvetica, sans-serif;
   outline: none;
   min-width: 100px;
+}
+.page-results {
+  text-align: center;
+}
+.page-results .statement {
+  font-size: 36px;
+  line-height: 1.5em;
 }
