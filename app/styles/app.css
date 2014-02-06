@@ -81,8 +81,8 @@ body {
   width: 50%;
 }
 .main-content .statement {
-  font: 62px/1em 'edmondsans_regular', Helvetica, sans-serif;
-  margin: 0 0 80px;
+  font: 42px/1em 'edmondsans_regular', Helvetica, sans-serif;
+  margin: 0 0 60px;
   width: 100%;
 }
 .main-content .visual {
@@ -97,7 +97,7 @@ body {
   background-color: transparent;
   border: 0;
   display: inline-block;
-  margin: 0 0 60px;
+  margin: 0 0 40px;
   position: relative;
 }
 .main-content .visual .figure {
@@ -136,6 +136,18 @@ body {
   background-color: transparent;
   border: 0;
 }
+.main-content .visual .figure.both {
+  background-image: url("../images/both.png");
+  background-repeat: no-repeat;
+  display: block;
+  width: 61px;
+  height: 120px;
+  font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+}
 .logo {
   background-image: url("../images/logo.png");
   background-repeat: no-repeat;
@@ -157,7 +169,7 @@ body {
   color: #fff;
   display: inline-block;
   line-height: 1em;
-  padding: 40px 50px;
+  padding: 25px 40px;
   text-transform: uppercase;
   text-align: center;
 }
@@ -196,8 +208,8 @@ body {
   -moz-border-radius: 10px;
   border-radius: 10px;
   left: 50%;
-  margin: 8px 0 0 -250px;
-  width: 500px;
+  margin: 8px 0 0 -160px;
+  width: 320px;
   overflow: 0;
   visibility: hidden;
 }
@@ -205,14 +217,14 @@ body {
 .wrap-dd-select .dropdown:after {
   border-width: 0 16px 16px 16px;
   right: 50%;
-  margin: 0 -8px 0 0;
+  margin: 0 -16px 0 0;
 }
 .wrap-dd-select .dropdown li:hover a {
   background: #fed5d5;
 }
 .wrap-dd-select .dropdown li a {
   color: #9c0505;
-  font-size: 48px;
+  font-size: 32px;
 }
 .page-login h1 {
   margin: 0 0 60px;
@@ -233,7 +245,6 @@ body {
   border-bottom: 3px solid #9c0505;
   color: #9c0505;
   display: inline-block;
-  font: 62px/1em 'edmondsans_regular', Helvetica, sans-serif;
   outline: none;
   min-width: 100px;
 }
@@ -241,6 +252,43 @@ body {
   text-align: center;
 }
 .page-results .statement {
-  font-size: 36px;
+  font-size: 32px;
   line-height: 1.5em;
+  margin: 0 0 20px;
+}
+.page-results .share {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.page-results .share li {
+  display: inline-block;
+}
+.page-results .share li.facebook a {
+  font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+  background: url(../images/sprite.png) no-repeat 0 0;
+  display: inline-block;
+  *display: inline;
+  /* IE7 inline-block hack */
+  *zoom: 1;
+  width: 44px;
+  height: 44px;
+}
+.page-results .share li.twitter a {
+  font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+  background: url(../images/sprite.png) no-repeat -49px 0;
+  display: inline-block;
+  *display: inline;
+  /* IE7 inline-block hack */
+  *zoom: 1;
+  width: 44px;
+  height: 44px;
 }

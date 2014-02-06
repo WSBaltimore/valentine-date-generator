@@ -22,22 +22,24 @@ app.controller('StartCtrl', function ($scope, $location, firebaseAuth, date) {
 
 	$scope.userPreferences = {
 		location: '',
-		gender: $scope.genderChoices[0].value
+		gender: ''
 	};
 
 	$scope.updateUserPrefs = function() {
 		$scope.userPreferences.gender = $scope.selectedGender.value;
 	};
 
-	// Set location
-	firebaseAuth.$getCurrentUser().then(function(data) {
-		$scope.userPreferences.location = data.location.name;
-	});
-
 	$scope.planDate = function() {
 		date.setUserPreferences($scope.userPreferences);
 		$location.path('/results');
 	};
+
+	// Get user data and set location
+	firebaseAuth.$getCurrentUser().then(function(data) {
+		$scope.user = data;
+		$scope.userPreferences.location = data.location.name;
+		$scope.userPreferences.gender = $scope.genderChoices[0].value;
+	});
 
 	// Return to homepage on logout
 	$scope.$on("$firebaseSimpleLogin:logout", function(e, user) {

@@ -15,17 +15,6 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 	////////////////////
 
 	/**
-	 * Get an object containing the user's login data
-	 * @return {object} A promise containing the user's simple login data
-	 */
-	var getUserData = function () {
-		return firebaseAuth.$getCurrentUser().then(function(user) {
-			console.log('retrieved user data');
-			return user;
-		});
-	};
-
-	/**
 	 * Get an object containing the user's available Facebook data
 	 * @return {object} A promise containing the user's Facebook data
 	 */
@@ -97,7 +86,6 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 	var getCoordinateData = function () {
 		return $http.get('https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=' + userPreferences.location).success(function (coords) {
 			console.log('retrieved coordinates');
-			console.log(coords);
 			return coords;
 		}).error(function(data) {
 			console.log('error getting coordinates! ' + data);
@@ -113,7 +101,7 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 
 		request.location = new google.maps.LatLng(coords.lat, coords.lng);
 		request.radius = '8000';
-		if (options.type) request.types = options.types;
+		if (options.types) request.types = options.types;
 		if (options.keyword) request.keyword = options.keyword;
 
 		service.nearbySearch(request, function(results, status) {
@@ -216,7 +204,6 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 	 * @return {object} An object containing the details of the date
 	 */
 	var generateDate = function () {
-
 		console.log('generating date...');
 
 		var restaurantDefaults = ['a steak restaurant', 'an Italian restaurant', 'a Chinese restaurant'];
@@ -224,7 +211,7 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 		var activityKeywords = ['bowling', 'skating', 'walk', 'dancing', 'museum', 'bar', 'movie theater'];
 		var activityTypes = ['amusement_park', 'aquarium', 'art_gallery', 'bar', 'book_store', 'bowling_alley', 'cafe', 'casino', 'movie_theater', 'museum', 'night_club', 'park', 'spa', 'zoo'];
 
-		// Google
+		// Location
 		var coords = getCoordinateData().then(function(coords) {
 			return coords;
 		}, function (error) {
@@ -236,10 +223,9 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 				return getRandomArrayValue(activityDefaults);
 			}
 
-			return getLocationData(coords, {
-				'types': activityTypes,
-				'keyword': getRandomArrayValue(activityKeywords)
-			}).then(function (activities) {
+			var options = { 'types': activityTypes, 'keyword': getRandomArrayValue(activityKeywords) };
+
+			return getLocationData(coords, options).then(function (activities) {
 				return getRandomArrayValue(activities).name;
 			}, function (data) {
 				return getRandomArrayValue(activityDefaults);
@@ -251,17 +237,19 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 				return getRandomArrayValue(restaurantDefaults);
 			}
 
-			return getLocationData(coords, {
-				'types': ['restaurant', 'cafe', 'bar']
-			}).then(function (activities) {
-				return getRandomArrayValue(activities).name;
+			var options = { 'types': ['restaurant', 'cafe', 'bar'] };
+
+			return getLocationData(coords, options).then(function (restaurants) {
+				console.log(getRandomArrayValue(restaurants).name);
+				return getRandomArrayValue(restaurants).name;
 			}, function (data) {
-				return getRandomArrayValue(activityDefaults);
+				// no results found, return a default restaurant
+				return getRandomArrayValue(restaurantDefaults);
 			});
 		});
 
 		// Facebook
-		var user = getUserData().then(function (user) {
+		var user = firebaseAuth.$getCurrentUser().then(function (user) {
 			return user;
 		});
 
@@ -273,13 +261,18 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 			return getPartnerData(facebook);
 		});
 
-		return $q.all([restaurant, activity, partner]).then(function(promises) {
-			console.log(promises);
-			date.restaurant = promises[0];
-			date.activity = promises[1];
-			date.partner = promises[2].data;
-			date.gift = getGift(promises[2].data);
-			date.pronoun = promises[2].data.gender === 'male' ? 'him' : 'her';
+		return $q.all([restaurant, activity, partner]).then(function(data) {
+			console.log(data);
+
+			var restaurant = data[0];
+			var	activity = data[1];
+			var	partner = data[2].data;
+
+			date.restaurant = restaurant;
+			date.activity = activity;
+			date.partner = partner;
+			date.gift = getGift(partner);
+			date.pronoun = partner.gender === 'male' ? 'him' : 'her';
 
 			return date;
 		});

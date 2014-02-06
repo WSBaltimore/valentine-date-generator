@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('valentineDateGeneratorApp', ['ngCookies', 'ngResource', 'ngSanitize', 'ngRoute', 'ngDropdowns', 'firebase']);
+var app = angular.module('valentineDateGeneratorApp', ['ngCookies', 'ngResource', 'ngSanitize', 'ngRoute', 'ngAnimate', 'ngDropdowns', 'firebase']);
 
 app.config( function( $routeProvider, $provide ) {
 	$routeProvider
