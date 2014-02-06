@@ -223,7 +223,7 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 				return getRandomArrayValue(activityDefaults);
 			}
 
-			var options = { 'types': activityTypes, 'keyword': getRandomArrayValue(activityDefaults).replace(/ /g,"+") };
+			var options = { 'types': activityTypes, 'keyword': getRandomArrayValue(activityDefaults).split(' ').join('+') };
 			console.log(options.keyword);
 
 			return getLocationData(coords, options).then(function (activities) {
