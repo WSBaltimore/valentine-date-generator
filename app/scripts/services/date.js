@@ -3,7 +3,6 @@
 app.factory('date', function ($http, $q, firebaseAuth) {
 
 	var userPreferences = {};
-
 	var date = {
 		partner: {},
 		restaurant: '',
@@ -22,7 +21,6 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 	var getUserData = function () {
 		return firebaseAuth.$getCurrentUser().then(function(user) {
 			console.log('retrieved user data');
-			console.log(user);
 			return user;
 		});
 	};
@@ -96,40 +94,39 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 		});
 	};
 
-	var getLocationData = function (types, keyword) {
-		// user userPreferences.location to get geoencoded coordinates to be used on future location based queries
-		return $http.get('https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=' + userPreferences.location).success(function (location) {
-
-			if ( location.status === 'OK' ) {
-				var deferred = $q.defer();
-				var coords = location.results[0].geometry.location;
-				var service = new google.maps.places.PlacesService(document.getElementById('map'));
-				var request = {};
-				request.location = new google.maps.LatLng(coords.lat, coords.lng);
-				request.radius = '8000';
-				if (types.length) request.types = types;
-				if (keyword) request.keyword = keyword;
-
-				service.nearbySearch(request, function(results, status) {
-					if (status == google.maps.places.PlacesServiceStatus.OK) {
-						console.log('retrieved location data');
-						deferred.resolve(results);
-					} else {
-						console.log('no location data!');
-						deferred.reject(status);
-					}
-				});
-
-				return deferred.promise;
-			}
-
-			////////////////////////////////////////////////////////////////////////////
-			// TODO: What the hell do we return if we can't query the location???? //
-			////////////////////////////////////////////////////////////////////////////
-
-		}).error(function(error) {
-			console.log('google cannot find that place!');
+	var getCoordinateData = function () {
+		return $http.get('https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=' + userPreferences.location).success(function (coords) {
+			console.log('retrieved coordinates');
+			console.log(coords);
+			return coords;
+		}).error(function(data) {
+			console.log('error getting coordinates! ' + data);
 		});
+	};
+
+	var getLocationData = function (location, options) {
+		var options = (typeof options === 'object') ? options : {};
+		var deferred = $q.defer();
+		var coords = location.data.results[0].geometry.location;
+		var service = new google.maps.places.PlacesService(document.getElementById('map'));
+		var request = {};
+
+		request.location = new google.maps.LatLng(coords.lat, coords.lng);
+		request.radius = '8000';
+		if (options.type) request.types = options.types;
+		if (options.keyword) request.keyword = options.keyword;
+
+		service.nearbySearch(request, function(results, status) {
+			if (status == google.maps.places.PlacesServiceStatus.OK) {
+				console.log('retrieved location data');
+				deferred.resolve(results);
+			} else {
+				console.log('no location data!');
+				deferred.reject(status);
+			}
+		});
+
+		return deferred.promise;
 	};
 
 	/////////////////////
@@ -200,6 +197,21 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 	};
 
 	/**
+	 * Calculates a user's age given a properly formatted date of birth
+	 * @param {string} User's birthday
+	 */
+	var getAge = function (birthday) {
+	    var today = new Date();
+	    var birthDate = new Date(birthday);
+	    var age = today.getFullYear() - birthDate.getFullYear();
+	    var m = today.getMonth() - birthDate.getMonth();
+	    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+	        age--;
+	    }
+	    return age;
+	};
+
+	/**
 	 * Run all necessary processes to generate a date outcome
 	 * @return {object} An object containing the details of the date
 	 */
@@ -209,33 +221,44 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 
 		var restaurantDefaults = ['a steak restaurant', 'an Italian restaurant', 'a Chinese restaurant'];
 		var activityDefaults = ['a fun bar', 'a skating rink', 'a romantic spot', 'a cool museum', 'a trendy cafe'];
-
 		var activityKeywords = ['bowling', 'skating', 'walk', 'dancing', 'museum', 'bar', 'movie theater'];
 		var activityTypes = ['amusement_park', 'aquarium', 'art_gallery', 'bar', 'book_store', 'bowling_alley', 'cafe', 'casino', 'movie_theater', 'museum', 'night_club', 'park', 'spa', 'zoo'];
 
 		// Google
-		var activity = getLocationData(activityTypes, getRandomArrayValue(activityKeywords)).then(function (activities) {
-			console.log(activities);
-			if ( activities.data.status === 'OK' ) {
-				return getRandomArrayValue(activities.data.results).name;
-			}
-			return getRandomArrayValue(activityDefaults);
-		}, function(data, status, headers, config) {
-			console.log('defaulting to generic activity list');
-			return getRandomArrayValue(activityDefaults);
+		var coords = getCoordinateData().then(function(coords) {
+			return coords;
+		}, function (error) {
+			console.log(error);
 		});
 
-		var restaurant = getLocationData(['restaurant', 'cafe', 'bar']).then(function (restaurants) {
-			console.log(restaurants);
-			if ( restaurants.data.status === 'OK' ) {
-				getRandomArrayValue(restaurants.data.results).name;
+		var activity = coords.then(function(coords) {
+			if (coords.data.status !== 'OK') {
+				return getRandomArrayValue(activityDefaults);
 			}
-			return getRandomArrayValue(restaurantDefaults);
-		}, function (data, status, headers, config) {
-			console.log('defaulting to generic restaurant list');
-			return getRandomArrayValue(restaurantDefaults);
+
+			return getLocationData(coords, {
+				'types': activityTypes,
+				'keyword': getRandomArrayValue(activityKeywords)
+			}).then(function (activities) {
+				return getRandomArrayValue(activities).name;
+			}, function (data) {
+				return getRandomArrayValue(activityDefaults);
+			});
 		});
 
+		var restaurant = coords.then(function (coords) {
+			if (coords.data.status !== 'OK') {
+				return getRandomArrayValue(restaurantDefaults);
+			}
+
+			return getLocationData(coords, {
+				'types': ['restaurant', 'cafe', 'bar']
+			}).then(function (activities) {
+				return getRandomArrayValue(activities).name;
+			}, function (data) {
+				return getRandomArrayValue(activityDefaults);
+			});
+		});
 
 		// Facebook
 		var user = getUserData().then(function (user) {
@@ -251,6 +274,7 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 		});
 
 		return $q.all([restaurant, activity, partner]).then(function(promises) {
+			console.log(promises);
 			date.restaurant = promises[0];
 			date.activity = promises[1];
 			date.partner = promises[2].data;
@@ -279,20 +303,6 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 	 */
 	function getRandomArrayValue(arr) {
 		return arr[ getRandomInt(0, arr.length - 1) ];
-	}
-
-	/**
-	 * Calculates a user's age given a properly formatted date of birth
-	 */
-	function getAge(birthday) {
-	    var today = new Date();
-	    var birthDate = new Date(birthday);
-	    var age = today.getFullYear() - birthDate.getFullYear();
-	    var m = today.getMonth() - birthDate.getMonth();
-	    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-	        age--;
-	    }
-	    return age;
 	}
 
 	return {
