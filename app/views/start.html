@@ -1,7 +1,7 @@
-<div class="main-content page-start">
+<div class="main-content page-start" ng-class="{loading: loading}">
 	<div class="centered">
 		<div class="visual">
-			<div class="figure figure-1" ng-class="{male: user.gender === 'male', female: user.gender === 'female'}"></div>
+			<div class="figure figure-1" ng-class="{male: user.gender === 'male', female: user.gender === 'female', both: user.gender === 'undefined'}"></div>
 			<div class="figure figure-2" ng-class="{male: userPreferences.gender === 'male', female: userPreferences.gender === 'female', both: userPreferences.gender === 'both'}"></div>
 		</div>
 		<div class="statement">

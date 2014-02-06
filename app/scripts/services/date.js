@@ -207,7 +207,7 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 		console.log('generating date...');
 
 		var restaurantDefaults = ['a steak restaurant', 'an Italian restaurant', 'a Chinese restaurant'];
-		var activityDefaults = ['a fun bar', 'a skating rink', 'a romantic spot', 'a cool museum', 'a trendy cafe'];
+		var activityDefaults = ['a cozy bar', 'a romantic spot', 'a cool museum', 'a trendy cafe', 'a karaoke bar', 'a cave for some spelunking', 'a pole dancing class', 'ye olde fashioned photo parlor', 'stargaze on the hood of your car', 'a bikram yoga class', 'help your friends move', 'a jump rope competition', 'a prancercizing class', 'a zoo', 'a spiritual medium', 'a lamaze class', 'your family reunion', 'a bikini contest', 'a gun range', 'a hunting lodge'];
 		var activityKeywords = ['bowling', 'skating', 'walk', 'dancing', 'museum', 'bar', 'movie theater'];
 		var activityTypes = ['amusement_park', 'aquarium', 'art_gallery', 'bar', 'book_store', 'bowling_alley', 'cafe', 'casino', 'movie_theater', 'museum', 'night_club', 'park', 'spa', 'zoo'];
 
@@ -223,9 +223,11 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 				return getRandomArrayValue(activityDefaults);
 			}
 
-			var options = { 'types': activityTypes, 'keyword': getRandomArrayValue(activityKeywords) };
+			var options = { 'types': activityTypes, 'keyword': getRandomArrayValue(activityDefaults).replace(/ /g,"+") };
+			console.log(options.keyword);
 
 			return getLocationData(coords, options).then(function (activities) {
+				console.log(activities);
 				return getRandomArrayValue(activities).name;
 			}, function (data) {
 				return getRandomArrayValue(activityDefaults);
@@ -240,7 +242,6 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 			var options = { 'types': ['restaurant', 'cafe', 'bar'] };
 
 			return getLocationData(coords, options).then(function (restaurants) {
-				console.log(getRandomArrayValue(restaurants).name);
 				return getRandomArrayValue(restaurants).name;
 			}, function (data) {
 				// no results found, return a default restaurant

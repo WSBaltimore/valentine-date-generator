@@ -30,6 +30,7 @@ app.controller('StartCtrl', function ($scope, $location, firebaseAuth, date) {
 	};
 
 	$scope.planDate = function() {
+		$scope.loading = true;
 		date.setUserPreferences($scope.userPreferences);
 		$location.path('/results');
 	};
