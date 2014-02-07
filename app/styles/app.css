@@ -44,6 +44,11 @@ Mixins
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
+* {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
 html,
 body {
   width: 100%;
@@ -58,6 +63,10 @@ body {
   color: #fff;
   font: 16px/1em 'edmondsans_regular', Helvetica, sans-serif;
   min-height: 100%;
+}
+a:hover {
+  cursor: pointer;
+  text-decoration: underline;
 }
 .container {
   width: 100%;
@@ -88,98 +97,25 @@ body {
 }
 .main-content .centered {
   display: inline-block;
+  margin: 20px 0;
   vertical-align: middle;
-  width: 50%;
+  width: 90%;
 }
 .main-content .statement {
   font: 42px/1em 'edmondsans_regular', Helvetica, sans-serif;
-  margin: 0 0 60px;
+  margin: 0 0 20px;
+  text-align: left;
   width: 100%;
 }
-.main-content .visual {
-  background-image: url("../images/heart.png");
-  background-repeat: no-repeat;
-  display: block;
-  width: 232px;
-  height: 229px;
-  font: 0/0 a;
-  color: transparent;
-  text-shadow: none;
-  background-color: transparent;
-  border: 0;
-  display: inline-block;
-  margin: 0 0 40px;
-  position: relative;
-}
-.main-content .visual .figure {
-  background-position: center center;
-  position: absolute;
-  margin: -70px 0 0;
-  top: 50%;
-  animation: bounceIn 1s;
-}
-.main-content .visual .figure.figure-1 {
-  left: 50px;
-}
-.main-content .visual .figure.figure-2 {
-  right: 50px;
-}
-.main-content .visual .figure.male {
-  background-image: url("../images/man.png");
-  background-repeat: no-repeat;
-  display: block;
-  width: 61px;
-  height: 120px;
-  font: 0/0 a;
-  color: transparent;
-  text-shadow: none;
-  background-color: transparent;
-  border: 0;
-}
-.main-content .visual .figure.female {
-  background-image: url("../images/woman.png");
-  background-repeat: no-repeat;
-  display: block;
-  width: 61px;
-  height: 120px;
-  font: 0/0 a;
-  color: transparent;
-  text-shadow: none;
-  background-color: transparent;
-  border: 0;
-}
-.main-content .visual .figure.both {
-  background-image: url("../images/both.png");
-  background-repeat: no-repeat;
-  display: block;
-  width: 61px;
-  height: 120px;
-  font: 0/0 a;
-  color: transparent;
-  text-shadow: none;
-  background-color: transparent;
-  border: 0;
-}
+.visual,
 .logo {
-  background-image: url("../images/logo.png");
-  background-repeat: no-repeat;
-  display: block;
-  width: 164px;
-  height: 78px;
-  font: 0/0 a;
-  color: transparent;
-  text-shadow: none;
-  background-color: transparent;
-  border: 0;
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
+  display: none;
 }
 .btn {
   background: #9c0505;
   border: 0 none;
   color: #fff;
-  display: inline-block;
+  display: block;
   line-height: 1em;
   padding: 25px 40px;
   text-transform: uppercase;
@@ -190,12 +126,11 @@ body {
   text-decoration: none;
 }
 .btn.btn-lg {
-  font-size: 36px;
+  font-size: 24px;
 }
 .wrap-dd-select {
   background: transparent;
   border: 0 none;
-  border-bottom: 3px solid #9c0505;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;
@@ -203,9 +138,8 @@ body {
   -moz-box-shadow: none;
   box-shadow: none;
   color: #9c0505;
-  display: inline-block;
+  display: block;
   font-weight: normal;
-  margin: 0 0 0.25em;
   padding: 0;
   width: auto;
 }
@@ -220,8 +154,8 @@ body {
   -moz-border-radius: 10px;
   border-radius: 10px;
   left: 50%;
-  margin: 8px 0 0 -160px;
-  width: 320px;
+  margin: 8px 0 0 -50%;
+  width: 100%;
   overflow: 0;
   visibility: hidden;
 }
@@ -239,22 +173,21 @@ body {
   font-size: 32px;
 }
 .page-login h1 {
-  margin: 0 0 60px;
+  margin: 0 0 40px;
 }
 .page-login h1 span {
   display: inline-block;
   font: 24px/1em 'edmondsans_regular', Helvetica, sans-serif;
-  margin: 0 0 1.25em;
+  margin: 0 0 20px;
   text-transform: uppercase;
 }
 .page-login h1 strong {
-  font: 72px/1em 'lavanderia_regular', Helvetica, sans-serif;
+  font: 48px/1.25em 'lavanderia_regular', Helvetica, sans-serif;
   text-transform: none;
 }
 .page-start .statement .content-editable {
   background: transparent;
   border: 0 none;
-  border-bottom: 3px solid #9c0505;
   color: #9c0505;
   display: inline-block;
   outline: none;
@@ -264,7 +197,7 @@ body {
   text-align: center;
 }
 .page-results .statement {
-  font-size: 32px;
+  font-size: 20px;
   line-height: 1.5em;
   margin: 0 0 20px;
 }
@@ -303,4 +236,122 @@ body {
   *zoom: 1;
   width: 44px;
   height: 44px;
+}
+@media screen and (min-width: 768px) {
+  .logo {
+    background-image: url("../images/logo.png");
+    background-repeat: no-repeat;
+    display: block;
+    width: 164px;
+    height: 78px;
+    font: 0/0 a;
+    color: transparent;
+    text-shadow: none;
+    background-color: transparent;
+    border: 0;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+  }
+  .btn {
+    display: inline-block;
+    padding: 25px 40px;
+  }
+  .main-content .centered {
+    width: 50%;
+  }
+  .main-content .statement {
+    margin: 0 0 40px;
+    text-align: center;
+  }
+  .main-content .visual {
+    background-image: url("../images/heart.png");
+    background-repeat: no-repeat;
+    display: block;
+    width: 232px;
+    height: 229px;
+    font: 0/0 a;
+    color: transparent;
+    text-shadow: none;
+    background-color: transparent;
+    border: 0;
+    display: inline-block;
+    margin: 0 0 40px;
+    position: relative;
+  }
+  .main-content .visual .figure {
+    background-position: center center;
+    position: absolute;
+    margin: -70px 0 0;
+    top: 50%;
+    animation: bounceIn 1s;
+  }
+  .main-content .visual .figure.figure-1 {
+    left: 50px;
+  }
+  .main-content .visual .figure.figure-2 {
+    right: 50px;
+  }
+  .main-content .visual .figure.male {
+    background-image: url("../images/man.png");
+    background-repeat: no-repeat;
+    display: block;
+    width: 61px;
+    height: 120px;
+    font: 0/0 a;
+    color: transparent;
+    text-shadow: none;
+    background-color: transparent;
+    border: 0;
+  }
+  .main-content .visual .figure.female {
+    background-image: url("../images/woman.png");
+    background-repeat: no-repeat;
+    display: block;
+    width: 61px;
+    height: 120px;
+    font: 0/0 a;
+    color: transparent;
+    text-shadow: none;
+    background-color: transparent;
+    border: 0;
+  }
+  .main-content .visual .figure.both {
+    background-image: url("../images/both.png");
+    background-repeat: no-repeat;
+    display: block;
+    width: 61px;
+    height: 120px;
+    font: 0/0 a;
+    color: transparent;
+    text-shadow: none;
+    background-color: transparent;
+    border: 0;
+  }
+  .main-content .logout {
+    color: #000;
+    font-size: 12px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+  .wrap-dd-select {
+    border-bottom: 3px solid #9c0505;
+    display: inline-block;
+    margin: 0 0 20px;
+  }
+  .wrap-dd-select .dropdown {
+    margin: 8px 0 0 -200px;
+    width: 400px;
+  }
+  .page-login h1 strong {
+    font-size: 72px;
+  }
+  .page-start .statement .content-editable {
+    border-bottom: 3px solid #9c0505;
+  }
+  .page-results .statement {
+    font-size: 28px;
+  }
 }

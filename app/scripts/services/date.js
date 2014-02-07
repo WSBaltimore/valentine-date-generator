@@ -1,6 +1,6 @@
 'use strict';
 
-app.factory('date', function ($http, $q, firebaseAuth) {
+app.factory('date', function ($http, $q, $location, firebaseAuth) {
 
 	var userPreferences = {};
 	var date = {
@@ -31,9 +31,9 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 	 * @return {object} A promise containing the user's selected partner's data
 	 */
 	var getPartnerData = function (facebook) {
-		var family = [];
 		var friends = facebook.friends.data;
 		var availableFriends = [];
+		var family = [];
 		var valid = true;
 
 		// setup array of family member IDs
@@ -77,7 +77,6 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 		return firebaseAuth.$getCurrentUser().then(function(user) {
 			return $http.get('https://graph.facebook.com/' + friendId + '?access_token=' + user.accessToken + '&fields=name,first_name,gender,favorite_athletes,favorite_teams,albums,television,music,movies,games,books').then(function(partner) {
 				console.log('retrieved partner data');
-				console.log(partner);
 				return partner;
 			});
 		});
@@ -87,23 +86,23 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 		return $http.get('https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=' + userPreferences.location).success(function (coords) {
 			console.log('retrieved coordinates');
 			return coords;
-		}).error(function(data) {
-			console.log('error getting coordinates! ' + data);
+		}).error(function (data) {
+			console.log('error getting coordinates!');
 		});
 	};
 
 	var getLocationData = function (location, options) {
 		var options = (typeof options === 'object') ? options : {};
-		var deferred = $q.defer();
 		var coords = location.data.results[0].geometry.location;
-		var service = new google.maps.places.PlacesService(document.getElementById('map'));
-		var request = {};
 
+		var request = {};
 		request.location = new google.maps.LatLng(coords.lat, coords.lng);
 		request.radius = '8000';
-		if (options.types) request.types = options.types;
-		if (options.keyword) request.keyword = options.keyword;
+		if (options.hasOwnProperty('types')) request.types = options.types;
+		if (options.hasOwnProperty('keyword')) request.keyword = options.keyword;
 
+		var deferred = $q.defer();
+		var service = new google.maps.places.PlacesService(document.getElementById('map'));
 		service.nearbySearch(request, function(results, status) {
 			if (status == google.maps.places.PlacesServiceStatus.OK) {
 				console.log('retrieved location data');
@@ -205,6 +204,11 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 	 */
 	var generateDate = function () {
 		console.log('generating date...');
+
+		if ( !userPreferences.hasOwnProperty('location') || !userPreferences.hasOwnProperty('gender') ) {
+			$location.path('/start');
+			return;
+		}
 
 		var restaurantDefaults = ['a steak restaurant', 'an Italian restaurant', 'a Chinese restaurant'];
 		var activityDefaults = ['a cozy bar', 'a romantic spot', 'a cool museum', 'a trendy cafe', 'a karaoke bar', 'a cave for some spelunking', 'a pole dancing class', 'ye olde fashioned photo parlor', 'stargaze on the hood of your car', 'a bikram yoga class', 'help your friends move', 'a jump rope competition', 'a prancercizing class', 'a zoo', 'a spiritual medium', 'a lamaze class', 'your family reunion', 'a bikini contest', 'a gun range', 'a hunting lodge'];
