@@ -2,8 +2,8 @@
 	<div class="centered">
 		<div class="statement">
 			Congratulations, you've been matched with <span>{{date.partner.name}}</span>.
-			We suggest taking {{date.partner.first_name}} to {{date.activity}} to start things off.
-			When you are ready to move on, head over to <span>{{date.restaurant}}</span> for some delicious food.
+			We suggest taking {{date.partner.first_name}} to <a href="{{date.activity.link}}" target="_blank">{{date.activity.name}}</a> to start things off.
+			When you are ready to move on, head over to <span><a href="{{date.restaurant.link}}" target="_blank">{{date.restaurant.name}}</a></span> for some delicious food.
 			Oh, and if you really want to impress {{date.partner.first_name}}, be sure to bring {{date.pronoun}} <span>{{date.gift}}</span>.
 			Enjoy your date!
 		</div>

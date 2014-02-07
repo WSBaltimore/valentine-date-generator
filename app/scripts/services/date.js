@@ -207,9 +207,7 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 		console.log('generating date...');
 
 		var restaurantDefaults = ['a steak restaurant', 'an Italian restaurant', 'a Chinese restaurant'];
-		var activityDefaults = ['a cozy bar', 'a romantic spot', 'a cool museum', 'a trendy cafe', 'a karaoke bar', 'a cave for some spelunking', 'a pole dancing class', 'ye olde fashioned photo parlor', 'stargaze on the hood of your car', 'a bikram yoga class', 'help your friends move', 'a jump rope competition', 'a prancercizing class', 'a zoo', 'a spiritual medium', 'a lamaze class', 'your family reunion', 'a bikini contest', 'a gun range', 'a hunting lodge'];
-		var activityKeywords = ['bowling', 'skating', 'walk', 'dancing', 'museum', 'bar', 'movie theater'];
-		var activityTypes = ['amusement_park', 'aquarium', 'art_gallery', 'bar', 'book_store', 'bowling_alley', 'cafe', 'casino', 'movie_theater', 'museum', 'night_club', 'park', 'spa', 'zoo'];
+		var activities = ['a cozy bar', 'a romantic spot', 'a cool museum', 'a trendy cafe', 'a karaoke bar', 'a cave for some spelunking', 'a pole dancing class', 'ye olde fashioned photo parlor', 'stargaze on the hood of your car', 'a bikram yoga class', 'help your friends move', 'a jump rope competition', 'a prancercizing class', 'a zoo', 'a spiritual medium', 'a lamaze class', 'your family reunion', 'a bikini contest', 'a gun range', 'a hunting lodge'];
 
 		// Location
 		var coords = getCoordinateData().then(function(coords) {
@@ -218,34 +216,35 @@ app.factory('date', function ($http, $q, firebaseAuth) {
 			console.log(error);
 		});
 
-		var activity = coords.then(function(coords) {
-			if (coords.data.status !== 'OK') {
-				return getRandomArrayValue(activityDefaults);
-			}
+		// Activity
+		var activity = {}; 
+		activity.name = getRandomArrayValue(activities);
+		activity.link = encodeURI('https://www.google.com/#q=' + activity.name.replace(' ', '+') + '+in+' + userPreferences.location.replace(' ', '+') );
 
-			var options = { 'types': activityTypes, 'keyword': getRandomArrayValue(activityDefaults).split(' ').join('+') };
-			console.log(options.keyword);
-
-			return getLocationData(coords, options).then(function (activities) {
-				console.log(activities);
-				return getRandomArrayValue(activities).name;
-			}, function (data) {
-				return getRandomArrayValue(activityDefaults);
-			});
-		});
-
+		// Restaurant
 		var restaurant = coords.then(function (coords) {
+			var restaurant = {};
+			var randomRestaurant = {};
+
 			if (coords.data.status !== 'OK') {
-				return getRandomArrayValue(restaurantDefaults);
+				randomRestaurant = getRandomArrayValue(restaurantDefaults);
+				restaurant.name = randomRestaurant;
+				restaurant.link = encodeURI('https://www.google.com/#q=' + randomRestaurant.replace(' ', '+') + '+in+' + userPreferences.location.replace(' ', '+') );
 			}
 
 			var options = { 'types': ['restaurant', 'cafe', 'bar'] };
 
 			return getLocationData(coords, options).then(function (restaurants) {
-				return getRandomArrayValue(restaurants).name;
+				var randomRestaurant = getRandomArrayValue(restaurants);
+				console.log( randomRestaurant );
+				restaurant.name = randomRestaurant.name;
+				restaurant.link = encodeURI('https://www.google.com/maps/preview/place/' + randomRestaurant.name.replace(' ', '+') + '/@' + randomRestaurant.geometry.location.d + ',' + randomRestaurant.geometry.location.e );
+				return restaurant;
 			}, function (data) {
 				// no results found, return a default restaurant
-				return getRandomArrayValue(restaurantDefaults);
+				randomRestaurant = getRandomArrayValue(restaurantDefaults);
+				restaurant.name = randomRestaurant;
+				restaurant.link = encodeURI('https://www.google.com/#q=' + randomRestaurant.replace(' ', '+') + '+in+' + userPreferences.location.replace(' ', '+') );
 			});
 		});
 
