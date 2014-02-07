@@ -59,14 +59,17 @@ body {
   -webkit-box-shadow: inset 0 0 250px rgba(156, 5, 5, 0.5);
   -moz-box-shadow: inset 0 0 250px rgba(156, 5, 5, 0.5);
   box-shadow: inset 0 0 250px rgba(156, 5, 5, 0.5);
-  background: url(../images/bg.png) top center repeat;
+  background: url(../images/bg-04.jpg) top center repeat;
   color: #fff;
   font: 16px/1em 'edmondsans_regular', Helvetica, sans-serif;
   min-height: 100%;
 }
+a {
+  text-decoration: none;
+}
 a:hover {
   cursor: pointer;
-  text-decoration: underline;
+  text-decoration: none;
 }
 .container {
   width: 100%;
@@ -137,7 +140,7 @@ a:hover {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
-  color: #9c0505;
+  color: #fff;
   display: block;
   font-weight: normal;
   padding: 0;
@@ -188,7 +191,7 @@ a:hover {
 .page-start .statement .content-editable {
   background: transparent;
   border: 0 none;
-  color: #9c0505;
+  color: #fff;
   display: inline-block;
   outline: none;
   min-width: 100px;
@@ -200,6 +203,10 @@ a:hover {
   font-size: 20px;
   line-height: 1.5em;
   margin: 0 0 20px;
+}
+.page-results .statement a {
+  border-bottom: 3px solid #fff;
+  color: #fff;
 }
 .page-results .share {
   margin: 0;
@@ -265,16 +272,8 @@ a:hover {
     text-align: center;
   }
   .main-content .visual {
-    background-image: url("../images/heart.png");
-    background-repeat: no-repeat;
-    display: block;
     width: 232px;
-    height: 229px;
-    font: 0/0 a;
-    color: transparent;
-    text-shadow: none;
-    background-color: transparent;
-    border: 0;
+    height: 120px;
     display: inline-block;
     margin: 0 0 40px;
     position: relative;
@@ -337,7 +336,7 @@ a:hover {
     right: 10px;
   }
   .wrap-dd-select {
-    border-bottom: 3px solid #9c0505;
+    border-bottom: 3px solid #fff;
     display: inline-block;
     margin: 0 0 20px;
   }
@@ -349,7 +348,7 @@ a:hover {
     font-size: 72px;
   }
   .page-start .statement .content-editable {
-    border-bottom: 3px solid #9c0505;
+    border-bottom: 3px solid #fff;
   }
   .page-results .statement {
     font-size: 28px;
