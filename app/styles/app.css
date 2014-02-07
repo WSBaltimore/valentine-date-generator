@@ -59,7 +59,9 @@ body {
   -webkit-box-shadow: inset 0 0 250px rgba(156, 5, 5, 0.5);
   -moz-box-shadow: inset 0 0 250px rgba(156, 5, 5, 0.5);
   box-shadow: inset 0 0 250px rgba(156, 5, 5, 0.5);
-  background: url(../images/bg-04.jpg) top center repeat;
+  background-image: url(../images/bg-06.jpg);
+  background-size: cover;
+  background-position: top center;
   color: #fff;
   font: 16px/1em 'edmondsans_regular', Helvetica, sans-serif;
   min-height: 100%;
@@ -87,8 +89,11 @@ a:hover {
   height: 100%;
   vertical-align: middle;
 }
+.main-content.loading {
+  /* :not(:required) hides this rule from IE9 and below */
+}
 .main-content.loading:after {
-  background: rgba(156, 5, 5, 0.75) url(../images/loading.gif) 50% 50% no-repeat;
+  background: rgba(156, 5, 5, 0.75);
   content: '';
   display: block;
   position: absolute;
@@ -98,6 +103,62 @@ a:hover {
   left: 0;
   animation: fadeInDown 1s;
 }
+.main-content.loading .loading-animation:not(:required) {
+  display: inline-block;
+  margin: -24px 0 0 -24px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  overflow: hidden;
+  font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+  width: 48px;
+  height: 48px;
+  z-index: 10;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+  -webkit-transform-origin: 50% 50%;
+  -moz-transform-origin: 50% 50%;
+  -ms-transform-origin: 50% 50%;
+  -o-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+}
+.main-content.loading .loading-animation:not(:required):after,
+.main-content.loading .loading-animation:not(:required):before {
+  position: absolute;
+  content: "";
+  background: #fff;
+}
+.main-content.loading .loading-animation:not(:required):before {
+  -webkit-border-top-left-radius: 16px;
+  -moz-border-radius-topleft: 16px;
+  border-top-left-radius: 16px;
+  -webkit-border-bottom-left-radius: 16px;
+  -moz-border-radius-bottomleft: 16px;
+  border-bottom-left-radius: 16px;
+  top: 16px;
+  left: 0;
+  width: 48px;
+  height: 32px;
+}
+.main-content.loading .loading-animation:not(:required):after {
+  -webkit-border-top-right-radius: 16px;
+  -moz-border-radius-topright: 16px;
+  border-top-right-radius: 16px;
+  -webkit-border-top-left-radius: 16px;
+  -moz-border-radius-topleft: 16px;
+  border-top-left-radius: 16px;
+  top: 0;
+  left: 16px;
+  width: 32px;
+  height: 17px;
+}
 .main-content .centered {
   display: inline-block;
   margin: 20px 0;
@@ -105,13 +166,16 @@ a:hover {
   width: 90%;
 }
 .main-content .statement {
+  background: rgba(156, 5, 5, 0.65);
   font: 42px/1em 'edmondsans_regular', Helvetica, sans-serif;
   margin: 0 0 20px;
+  padding: 60px 40px;
   text-align: left;
   width: 100%;
 }
 .visual,
-.logo {
+.logo,
+.loading-animation {
   display: none;
 }
 .logout {
@@ -180,6 +244,7 @@ a:hover {
 }
 .page-login h1 {
   margin: 0 0 40px;
+  text-shadow: 1px 1px 0 #000;
 }
 .page-login h1 span {
   display: inline-block;
@@ -273,12 +338,13 @@ a:hover {
   .main-content .statement {
     margin: 0 0 40px;
     text-align: center;
+    text-shadow: 1px 1px 0 #000;
   }
   .main-content .visual {
     width: 232px;
     height: 120px;
-    display: inline-block;
-    margin: 0 0 40px;
+    display: block;
+    margin: 0 auto 40px;
     position: relative;
   }
   .main-content .visual .figure {
@@ -347,6 +413,7 @@ a:hover {
   }
   .wrap-dd-select .dropdown {
     margin: 8px 0 0 -200px;
+    text-shadow: none;
     width: 400px;
   }
   .page-login h1 strong {

@@ -1,24 +1,33 @@
 // Variables
 @dark-red: #9c0505;
+@heart-size: 48px;
 
 // Global
 * { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
 html, body { width: 100%; height: 100%; overflow: auto; }
-body { .box-shadow(inset 0 0 250px rgba(156,5,5,0.5)); background: url(../images/bg-04.jpg) top center repeat; color: #fff; font: 16px/1em @font-family-sans; min-height: 100%; }
+body { .box-shadow(inset 0 0 250px rgba(156,5,5,0.5)); background-image: url(../images/bg-06.jpg); background-size: cover; background-position: top center; color: #fff; font: 16px/1em @font-family-sans; min-height: 100%; }
 a { text-decoration: none; }
 a:hover { cursor: pointer; text-decoration: none; }
 .container { width: 100%; height: 100%; }
 .main-content { text-align: center; width: 100%; height: 100%;
 	&:before { content: ''; display: inline-block; margin-right: -0.25em; height: 100%; vertical-align: middle; }
 	&.loading {
-		&:after { background: rgba(156, 5, 5, 0.75) url(../images/loading.gif) 50% 50% no-repeat; content: ''; display: block; position: absolute; top: 0; right: 0; bottom: 0; left: 0; animation: fadeInDown 1s; }
+		&:after { background: rgba(156, 5, 5, 0.75); content: ''; display: block; position: absolute; top: 0; right: 0; bottom: 0; left: 0; animation: fadeInDown 1s; }
+
+		/* :not(:required) hides this rule from IE9 and below */
+		.loading-animation:not(:required) { display: inline-block; margin: -(@heart-size / 2) 0 0 -(@heart-size / 2); position: absolute; top: 50%; left: 50%; overflow: hidden; .hide-text(); width: @heart-size; height: @heart-size; z-index: 10; .transform( rotate(45deg) ); .transform-origin(50% 50%);
+			&:after, &:before { position: absolute; content: ""; background: #fff; }
+			&:before { .border-left-radius(@heart-size / 3); top: @heart-size / 3; left: 0; width: @heart-size; height: (2 * @heart-size / 3); }
+			&:after { .border-top-radius(@heart-size / 3); top: 0; left: @heart-size / 3; width: (2 * @heart-size / 3); height: (@heart-size / 3) + 1; }
+		}
 	}
 
 	.centered { display: inline-block; margin: 20px 0; vertical-align: middle; width: 90%; }
-	.statement { font: 42px/1em @font-family-sans; margin: 0 0 20px; text-align: left; width: 100%; }
+	.statement { background: rgba(156, 5, 5, 0.65); font: 42px/1em @font-family-sans; margin: 0 0 20px; padding: 60px 40px; text-align: left; width: 100%; }
 }
 .visual,
-.logo { display: none; }
+.logo,
+.loading-animation { display: none; }
 .logout { padding: 0 0 10px; }
 
 // Buttons
@@ -47,7 +56,7 @@ a:hover { cursor: pointer; text-decoration: none; }
 
 // Modules
 .page-login {
-	h1 { margin: 0 0 40px;
+	h1 { margin: 0 0 40px; text-shadow: 1px 1px 0 #000;
 		span { display: inline-block; font: 24px/1em @font-family-sans; margin: 0 0 20px; text-transform: uppercase; }
 		strong { font: 48px/1.25em @font-family-script; text-transform: none; }
 	}
@@ -78,8 +87,8 @@ a:hover { cursor: pointer; text-decoration: none; }
 	.btn { display: inline-block; padding: 25px 40px; }
 	.main-content {
 		.centered { width: 50%; }
-		.statement { margin: 0 0 40px; text-align: center; }
-		.visual { .size(232px, 120px); display: inline-block; margin: 0 0 40px; position: relative;
+		.statement { margin: 0 0 40px; text-align: center; text-shadow: 1px 1px 0 #000; }
+		.visual { .size(232px, 120px); display: block; margin: 0 auto 40px; position: relative;
 			.figure { background-position: center center; position: absolute; margin: -70px 0 0; top: 50%; animation: bounceIn 1s;
 				&.figure-1 { left: 50px; }
 				&.figure-2 { right: 50px; }
@@ -91,7 +100,7 @@ a:hover { cursor: pointer; text-decoration: none; }
 		.logout { color: #000; font-size: 12px; font-weight: bold; position: absolute; top: 10px; right: 10px; }
 	}
 	.wrap-dd-select { background: transparent; border-bottom: 3px solid #fff; color: #fff; display: inline-block; margin: 0 0 5px;
-		.dropdown { margin: 8px 0 0 -200px; width: 400px; }
+		.dropdown { margin: 8px 0 0 -200px; text-shadow: none; width: 400px; }
 	}
 
 	.page-login {
