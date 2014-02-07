@@ -88,7 +88,7 @@ a:hover {
   vertical-align: middle;
 }
 .main-content.loading:after {
-  background: rgba(242, 80, 80, 0.85) url(../images/loading.gif) 50% 50% no-repeat;
+  background: rgba(156, 5, 5, 0.75) url(../images/loading.gif) 50% 50% no-repeat;
   content: '';
   display: block;
   position: absolute;
@@ -114,6 +114,9 @@ a:hover {
 .logo {
   display: none;
 }
+.logout {
+  padding: 0 0 10px;
+}
 .btn {
   background: #9c0505;
   border: 0 none;
@@ -132,7 +135,7 @@ a:hover {
   font-size: 24px;
 }
 .wrap-dd-select {
-  background: transparent;
+  background: #fff;
   border: 0 none;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -140,7 +143,7 @@ a:hover {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
-  color: #fff;
+  color: #9c0505;
   display: block;
   font-weight: normal;
   padding: 0;
@@ -189,9 +192,9 @@ a:hover {
   text-transform: none;
 }
 .page-start .statement .content-editable {
-  background: transparent;
+  background: #fff;
   border: 0 none;
-  color: #fff;
+  color: #9c0505;
   display: inline-block;
   outline: none;
   min-width: 100px;
@@ -336,9 +339,11 @@ a:hover {
     right: 10px;
   }
   .wrap-dd-select {
+    background: transparent;
     border-bottom: 3px solid #fff;
+    color: #fff;
     display: inline-block;
-    margin: 0 0 20px;
+    margin: 0 0 5px;
   }
   .wrap-dd-select .dropdown {
     margin: 8px 0 0 -200px;
@@ -348,7 +353,9 @@ a:hover {
     font-size: 72px;
   }
   .page-start .statement .content-editable {
+    background: transparent;
     border-bottom: 3px solid #fff;
+    color: #fff;
   }
   .page-results .statement {
     font-size: 28px;
