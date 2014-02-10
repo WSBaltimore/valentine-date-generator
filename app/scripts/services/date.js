@@ -210,8 +210,8 @@ app.factory('date', function ($http, $q, $location, firebaseAuth) {
 			return;
 		}
 
-		var restaurantDefaults = ['a steak restaurant', 'an Italian restaurant', 'a Chinese restaurant'];
-		var activities = ['a cozy bar', 'a romantic spot', 'a cool museum', 'a trendy cafe', 'a karaoke bar', 'a cave for some spelunking', 'a pole dancing class', 'ye olde fashioned photo parlor', 'stargaze on the hood of your car', 'a bikram yoga class', 'help your friends move', 'a jump rope competition', 'a prancercizing class', 'a zoo', 'a spiritual medium', 'a lamaze class', 'your family reunion', 'a bikini contest', 'a gun range', 'a hunting lodge'];
+		var restaurantDefaults = ['a steak house', 'an Italian restaurant', 'a Chinese restaurant', 'a sushi bar', 'a teppanyaki restaurant', 'a fondue restaurant'];
+		var activities = ['a cozy bar', 'a romantic spot', 'a cool museum', 'a trendy cafe', 'a karaoke bar', 'a cave for some spelunking', 'a pole dancing class', 'ye olde fashioned photo parlor', 'stargaze on the hood of your car', 'a bikram yoga class', 'a prancercizing class', 'a zoo', 'a spiritual medium', 'your family reunion', 'a gun range', 'a hunting lodge', 'an art gallery', 'an arcade', 'a wine tasting', 'a brewery', 'a LAN party', 'a medical operating theater'];
 
 		// Location
 		var coords = getCoordinateData().then(function(coords) {
