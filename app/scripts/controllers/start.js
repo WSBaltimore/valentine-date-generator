@@ -1,7 +1,8 @@
 'use strict';
 
-app.controller('StartCtrl', function ($scope, $location, firebaseAuth, date) {
-	$scope.firebaseAuth = firebaseAuth;
+app.controller('StartCtrl', function ($scope, $location, date) {
+	$scope.date = date;
+
 	$scope.genderChoices = [
 		{
 			'text': 'man or a woman',
@@ -36,15 +37,11 @@ app.controller('StartCtrl', function ($scope, $location, firebaseAuth, date) {
 	};
 
 	// Get user data and set location
-	firebaseAuth.$getCurrentUser().then(function(data) {
-		$scope.user = data;
-		$scope.userPreferences.location = data.location.name;
+	date.getFacebookData().then(function(facebook) {
+		console.log(facebook);
+		$scope.user = facebook;
+		$scope.userPreferences.location = facebook.location.name;
 		$scope.userPreferences.gender = $scope.genderChoices[0].value;
-	});
-
-	// Return to homepage on logout
-	$scope.$on("$firebaseSimpleLogin:logout", function(e, user) {
-		$location.path('/');
 	});
 
 });

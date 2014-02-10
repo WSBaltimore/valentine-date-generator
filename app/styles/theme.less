@@ -5,7 +5,7 @@
 // Global
 * { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
 html, body { width: 100%; height: 100%; overflow: auto; }
-body { .box-shadow(inset 0 0 250px rgba(156,5,5,0.5)); background-image: url(../images/bg-06.jpg); background-size: cover; background-position: top center; color: #fff; font: 16px/1em @font-family-sans; min-height: 100%; }
+body { .box-shadow(inset 0 0 250px rgba(156,5,5,0.5)); background-image: url(../images/bg.jpg); background-size: cover; background-position: top center; color: #fff; font: 16px/1em @font-family-sans; min-height: 100%; }
 a { text-decoration: none; }
 a:hover { cursor: pointer; text-decoration: none; }
 .container { width: 100%; height: 100%; }
@@ -74,8 +74,8 @@ a:hover { cursor: pointer; text-decoration: none; }
 	}
 	.share { margin: 0; padding: 0; list-style: none;
 		li { display: inline-block;
-			&.facebook a { .sprite-block(0, 0, 44px, 44px); }
-			&.twitter a { .sprite-block(-49px, 0, 44px, 44px); }
+			&.facebook .share { .sprite-block(0, 0, 44px, 44px); }
+			&.twitter .share { .sprite-block(-49px, 0, 44px, 44px); }
 		}
 	}
 }

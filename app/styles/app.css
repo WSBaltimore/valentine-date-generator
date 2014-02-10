@@ -59,7 +59,7 @@ body {
   -webkit-box-shadow: inset 0 0 250px rgba(156, 5, 5, 0.5);
   -moz-box-shadow: inset 0 0 250px rgba(156, 5, 5, 0.5);
   box-shadow: inset 0 0 250px rgba(156, 5, 5, 0.5);
-  background-image: url(../images/bg-06.jpg);
+  background-image: url(../images/bg.jpg);
   background-size: cover;
   background-position: top center;
   color: #fff;
@@ -284,7 +284,7 @@ a:hover {
 .page-results .share li {
   display: inline-block;
 }
-.page-results .share li.facebook a {
+.page-results .share li.facebook .share {
   font: 0/0 a;
   color: transparent;
   text-shadow: none;
@@ -298,7 +298,7 @@ a:hover {
   width: 44px;
   height: 44px;
 }
-.page-results .share li.twitter a {
+.page-results .share li.twitter .share {
   font: 0/0 a;
   color: transparent;
   text-shadow: none;
