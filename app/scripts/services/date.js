@@ -221,7 +221,7 @@ app.factory('date', function ($http, $q, $location, firebaseAuth) {
 		});
 
 		// Activity
-		var activity = {}; 
+		var activity = {};
 		activity.name = getRandomArrayValue(activities);
 		activity.link = encodeURI('https://www.google.com/#q=' + activity.name.replace(' ', '+') + '+in+' + userPreferences.location.replace(' ', '+') );
 

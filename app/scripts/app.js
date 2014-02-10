@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('valentineDateGeneratorApp', ['ngCookies', 'ngResource', 'ngSanitize', 'ngRoute', 'ngAnimate', 'ngDropdowns', 'firebase']);
+var app = angular.module('valentineDateGeneratorApp', ['ngCookies', 'ngResource', 'ngSanitize', 'ngRoute', 'ngDropdowns', 'firebase']);
 
 app.config( function( $routeProvider, $provide ) {
 	$routeProvider
@@ -41,5 +41,11 @@ app.config( function( $routeProvider, $provide ) {
 			return $delegate;
 		}
 	]);
+
+	FB.init({
+		appId: '392018434276495',
+		status: true,
+		xfbml: true
+	});
 
 });
