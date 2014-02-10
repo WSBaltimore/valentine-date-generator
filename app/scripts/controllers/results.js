@@ -1,9 +1,9 @@
 'use strict';
 
-app.controller('ResultsCtrl', function ($scope, $location, firebaseAuth, date, theDate) {
-	$scope.firebaseAuth = firebaseAuth;
+app.controller('ResultsCtrl', function ($scope, $location, date, theDate) {
+	$scope.date = date;
 	$scope.prefs = date.userPreferences;
-	$scope.date = theDate;
+	$scope.theDate = theDate;
 
 	$scope.share = {
 		title: "Weber Shandwick Valentine's Day Date Generator",
@@ -13,12 +13,4 @@ app.controller('ResultsCtrl', function ($scope, $location, firebaseAuth, date, t
 		image: "/images/share.png",
 		hashtags: "myvalentinedate"
 	};
-
-	// Return to homepage if user preferences aren't set
-	console.log($scope.prefs);
-
-	// Return to homepage on logout
-	$scope.$on("$firebaseSimpleLogin:logout", function(e, user) {
-		$location.path('/');
-	});
 });

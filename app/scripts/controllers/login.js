@@ -1,11 +1,11 @@
 'use strict';
 
-app.controller('LoginCtrl', function ($scope, $rootScope, $location, firebaseAuth) {
-	$scope.auth = firebaseAuth;
+app.controller('LoginCtrl', function ($scope, $rootScope, $location, date) {
 
-	// Once logged in, redirect to start page
-	$rootScope.$on("$firebaseSimpleLogin:login", function(e, user) {
-		$location.path('/start');
-		console.log('login');
-	});
+	$scope.login = function() {
+		date.getUserData().then(function(user) {
+			$location.path('/start');
+		});
+	};
+
 });

@@ -1,6 +1,9 @@
 'use strict';
 
-app.factory('date', function ($http, $q, $location, firebaseAuth) {
+app.factory('date', function ($http, $q, $location) {
+
+	var userID;
+	var accessToken;
 
 	var userPreferences = {};
 	var date = {
@@ -10,16 +13,42 @@ app.factory('date', function ($http, $q, $location, firebaseAuth) {
 		gift: ''
 	};
 
+	if ( !userID || !accessToken ) {
+		$location.path('/');
+	};
+
 	////////////////////
 	// Data Requests //
 	////////////////////
+
+	var logout = function() {
+		FB.logout();
+		$location.path('/');
+	};
+
+	var getUserData = function () {
+		var deferred = $q.defer();
+
+		FB.login(function(response) {
+			if (response.authResponse) {
+				userID = response.authResponse.userID;
+				accessToken = response.authResponse.accessToken;
+				deferred.resolve( response );
+			} else {
+				deferred.reject();
+				console.log('User cancelled login or did not fully authorize.');
+			}
+		}, { scope: 'user_birthday,user_location,user_relationships,user_relationship_details,friends_birthday,friends_location,friends_relationships,friends_relationship_details'});
+
+		return deferred.promise;
+	};
 
 	/**
 	 * Get an object containing the user's available Facebook data
 	 * @return {object} A promise containing the user's Facebook data
 	 */
-	var getFacebookData = function(user) {
-		return $http.get('https://graph.facebook.com/' + user.id + '?access_token=' + user.accessToken + '&fields=id,name,age_range,relationship_status,gender,location,significant_other,checkins,family,friends.fields(name,birthday,relationship_status,gender,significant_other,television.fields(name,id),movies.fields(name,id),games.fields(name,id),music.fields(id,name),books.fields(name,id))').then(function(facebook) {
+	var getFacebookData = function() {
+		return $http.get('https://graph.facebook.com/' + userID + '?access_token=' + accessToken + '&fields=id,name,age_range,relationship_status,gender,location,significant_other,checkins,family,friends.fields(name,birthday,relationship_status,gender,significant_other,television.fields(name,id),movies.fields(name,id),games.fields(name,id),music.fields(id,name),books.fields(name,id))').then(function(facebook) {
 			console.log('retrieved facebook data');
 			console.log(facebook.data);
 			return facebook.data;
@@ -74,11 +103,9 @@ app.factory('date', function ($http, $q, $location, firebaseAuth) {
 		// Just pick a random friend for now...
 		var friendId = getRandomArrayValue(availableFriends).id;
 
-		return firebaseAuth.$getCurrentUser().then(function(user) {
-			return $http.get('https://graph.facebook.com/' + friendId + '?access_token=' + user.accessToken + '&fields=name,first_name,gender,favorite_athletes,favorite_teams,albums,television,music,movies,games,books').then(function(partner) {
-				console.log('retrieved partner data');
-				return partner;
-			});
+		return $http.get('https://graph.facebook.com/' + friendId + '?access_token=' + accessToken + '&fields=name,first_name,gender,favorite_athletes,favorite_teams,albums,television,music,movies,games,books').then(function(partner) {
+			console.log('retrieved partner data');
+			return partner;
 		});
 	};
 
@@ -205,7 +232,9 @@ app.factory('date', function ($http, $q, $location, firebaseAuth) {
 	var generateDate = function () {
 		console.log('generating date...');
 
-		if ( !userPreferences.hasOwnProperty('location') || !userPreferences.hasOwnProperty('gender') ) {
+		if ( !userID || !accessToken ) {
+			$location.path('/');
+		} else if ( !userPreferences.hasOwnProperty('location') || !userPreferences.hasOwnProperty('gender') ) {
 			$location.path('/start');
 			return;
 		}
@@ -253,15 +282,7 @@ app.factory('date', function ($http, $q, $location, firebaseAuth) {
 		});
 
 		// Facebook
-		var user = firebaseAuth.$getCurrentUser().then(function (user) {
-			return user;
-		});
-
-		var facebook = user.then(function (user) {
-			return getFacebookData(user);
-		});
-
-		var partner = facebook.then(function (facebook) {
+		var partner = getFacebookData().then(function (facebook) {
 			return getPartnerData(facebook);
 		});
 
@@ -303,12 +324,15 @@ app.factory('date', function ($http, $q, $location, firebaseAuth) {
 	}
 
 	return {
+		user: { userId: userID, accessToken: accessToken},
+		getUserData: getUserData,
 		getFacebookData: getFacebookData,
 		setUserPreferences: setUserPreferences,
 		getPartnerData: getPartnerData,
 		getGift: getGift,
 		generateDate: generateDate,
 		userPreferences: userPreferences,
-		date: date
+		date: date,
+		logout: logout
 	}
 });

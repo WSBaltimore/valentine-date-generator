@@ -1,10 +1,10 @@
 <div class="main-content page-results">
 	<div class="centered">
 		<div class="statement">
-			Congratulations, you've been matched with <span>{{date.partner.name}}</span>.
-			We suggest taking {{date.partner.first_name}} to <a href="{{date.activity.link}}" target="_blank">{{date.activity.name}}</a> to start things off.
-			When you are ready to move on, head over to <span><a href="{{date.restaurant.link}}" target="_blank">{{date.restaurant.name}}</a></span> for some delicious food.
-			Oh, and if you really want to impress {{date.partner.first_name}}, be sure to bring {{date.pronoun}} <span>{{date.gift}}</span>.
+			Congratulations, you've been matched with <span>{{theDate.partner.name}}</span>.
+			We suggest taking {{theDate.partner.first_name}} to <a href="{{theDate.activity.link}}" target="_blank">{{theDate.activity.name}}</a> to start things off.
+			When you are ready to move on, head over to <span><a href="{{theDate.restaurant.link}}" target="_blank">{{theDate.restaurant.name}}</a></span> for some delicious food.
+			Oh, and if you really want to impress {{theDate.partner.first_name}}, be sure to bring {{theDate.pronoun}} <span>{{theDate.gift}}</span>.
 			Enjoy your date!
 		</div>
 		<a class="btn btn-lg" href="/#/start">Try Again</a>
@@ -13,5 +13,5 @@
 			<li class="twitter"><share network="twitter" title="{{share.title}}" description="{{share.description}}" link="{{share.link}}" hashtags="{{share.hashtags}}"></share></li>
 		</ul>
 	</div>
-	<a class="logout" ng-href="" ng-click="firebaseAuth.$logout()">Logout</a>
+	<a class="logout" ng-href="" ng-click="date.logout()">Logout</a>
 </div>
