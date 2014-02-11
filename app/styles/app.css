@@ -298,7 +298,10 @@ a:hover {
   text-shadow: none;
   background-color: transparent;
   border: 0;
-  margin: 0 auto 40px;
+  margin: 0 auto;
+  background-size: contain;
+  width: 100%;
+  max-width: 320px;
 }
 .page-results .statement {
   font-size: 20px;
@@ -459,6 +462,12 @@ a:hover {
     background: transparent;
     border-bottom: 3px solid #fff;
     color: #fff;
+  }
+  .page-results .engaging {
+    background-size: auto;
+    margin: 0 auto 20px;
+    width: 335px;
+    max-width: 100%;
   }
   .page-results .statement {
     font-size: 28px;

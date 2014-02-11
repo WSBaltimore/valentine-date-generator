@@ -261,7 +261,7 @@ app.factory('date', function ($http, $q, $location) {
 		}
 
 		var restaurantDefaults = ['a steak house', 'an Italian restaurant', 'a Chinese restaurant', 'a sushi bar', 'a teppanyaki restaurant', 'a fondue restaurant', 'a burger joint', 'a fast food restaurant'];
-		var activities = ['a cozy bar', 'a romantic spot', 'a cool museum', 'a trendy cafe', 'a karaoke bar', 'a cave for some spelunking', 'a pole dancing class', 'ye olde fashioned photo parlor', 'stargaze on the hood of your car', 'a bikram yoga class', 'a prancercizing class', 'a zoo', 'a spiritual medium', 'your family reunion', 'a gun range', 'a hunting lodge', 'an art gallery', 'an arcade', 'a wine tasting', 'a brewery', 'a LAN party', 'a medical operating theater'];
+		var activities = ['a cozy bar', 'a romantic spot', 'a cool museum', 'a trendy cafe', 'a karaoke bar', 'a cave for some spelunking', 'a pole dancing class', 'ye olde fashioned photo parlor', 'stargaze on the hood of your car', 'a bikram yoga class', 'a prancercising class', 'a zoo', 'a spiritual medium', 'your family reunion', 'a gun range', 'a hunting lodge', 'an art gallery', 'an arcade', 'a wine tasting', 'a brewery', 'a medical operating theater', 'a driving range', 'a spa', 'a LAN meetup', 'a mini golf course', 'play darts', 'the opera', 'a movie', 'volunteer with the community', 'skydive', 'a bouncy castle', 'a mime show' ];
 
 		// Location
 		var coords = getCoordinateData().then(function(coords) {

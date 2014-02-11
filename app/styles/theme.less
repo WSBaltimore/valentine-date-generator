@@ -78,7 +78,7 @@ a:hover { cursor: pointer; text-decoration: none; }
 }
 
 .page-results { text-align: center;
-	.engaging { .ir(335px, 160px, 'engaging.png'); margin: 0 auto 40px; }
+	.engaging { .ir(335px, 160px, 'engaging.png'); margin: 0 auto; background-size: contain; width: 100%; max-width: 320px; }
 	.statement { font-size: 20px; line-height: 1.5em; margin: 0 0 20px;
 		a { border-bottom: 3px solid #fff; color: #fff; }
 	}
@@ -124,6 +124,7 @@ a:hover { cursor: pointer; text-decoration: none; }
 		}
 	}
 	.page-results {
+		.engaging { background-size: auto; margin: 0 auto 20px; width: 335px; max-width: 100%; }
 		.statement { font-size: 28px; margin: 0 0 20px; }
 	}
 }
