@@ -194,14 +194,15 @@ a:hover {
   width: 100%;
 }
 .visual,
-.logo {
+.logo,
+.loading-animation {
   display: none;
 }
 .logout {
   padding: 0 0 10px;
 }
 .btn {
-  background: #9c0505;
+  background: rgba(156, 5, 5, 0.65);
   border: 0 none;
   color: #fff;
   display: block;
@@ -285,6 +286,19 @@ a:hover {
 }
 .page-results {
   text-align: center;
+}
+.page-results .engaging {
+  background-image: url("../images/engaging.png");
+  background-repeat: no-repeat;
+  display: block;
+  width: 335px;
+  height: 160px;
+  font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+  margin: 0 auto 40px;
 }
 .page-results .statement {
   font-size: 20px;

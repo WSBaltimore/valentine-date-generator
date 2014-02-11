@@ -35,11 +35,12 @@ a:hover { cursor: pointer; text-decoration: none; }
 	.statement { background: rgba(156, 5, 5, 0.65); font: 42px/1em @font-family-sans; margin: 0 0 20px; padding: 60px 40px; text-align: left; width: 100%; }
 }
 .visual,
-.logo { display: none; }
+.logo,
+.loading-animation { display: none; }
 .logout { padding: 0 0 10px; }
 
 // Buttons
-.btn { background: @dark-red; border: 0 none; color: #fff; display: block; line-height: 1em; padding: 25px 40px; text-transform: uppercase; text-align: center;
+.btn { background: rgba(156, 5, 5, 0.65); border: 0 none; color: #fff; display: block; line-height: 1em; padding: 25px 40px; text-transform: uppercase; text-align: center;
 	&:hover { cursor: pointer; text-decoration: none; }
 	&.btn-lg { font-size: 24px; }
 }
@@ -77,6 +78,7 @@ a:hover { cursor: pointer; text-decoration: none; }
 }
 
 .page-results { text-align: center;
+	.engaging { .ir(335px, 160px, 'engaging.png'); margin: 0 auto 40px; }
 	.statement { font-size: 20px; line-height: 1.5em; margin: 0 0 20px;
 		a { border-bottom: 3px solid #fff; color: #fff; }
 	}
