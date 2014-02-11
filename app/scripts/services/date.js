@@ -48,7 +48,6 @@ app.factory('date', function ($http, $q, $location) {
 
 		FB.login(function(response) {
 			if (response.authResponse) {
-				console.log(response);
 				userID = response.authResponse.userID;
 				accessToken = response.authResponse.accessToken;
 				deferred.resolve( response );
@@ -68,7 +67,6 @@ app.factory('date', function ($http, $q, $location) {
 	var getFacebookData = function() {
 		return $http.get('https://graph.facebook.com/' + userID + '?access_token=' + accessToken + '&fields=id,name,age_range,relationship_status,gender,location,significant_other,checkins,family,friends.fields(name,birthday,relationship_status,gender,significant_other,television.fields(name,id),movies.fields(name,id),games.fields(name,id),music.fields(id,name),books.fields(name,id))').success(function(facebook) {
 			console.log('retrieved facebook data');
-			console.log(facebook);
 			return facebook;
 		}).error(function (data) {
 			console.log('error: ' + data);
@@ -292,7 +290,6 @@ app.factory('date', function ($http, $q, $location) {
 
 			return getLocationData(coords, options).then(function (restaurants) {
 				var randomRestaurant = getRandomArrayValue(restaurants);
-				console.log( randomRestaurant );
 				restaurant.name = randomRestaurant.name;
 				restaurant.link = encodeURI('https://www.google.com/maps/preview/place/' + randomRestaurant.name.replace(' ', '+') + '/@' + randomRestaurant.geometry.location.d + ',' + randomRestaurant.geometry.location.e );
 				return restaurant;
@@ -310,8 +307,6 @@ app.factory('date', function ($http, $q, $location) {
 		});
 
 		return $q.all([restaurant, activity, partner]).then(function(data) {
-			console.log(data);
-
 			var restaurant = data[0];
 			var	activity = data[1];
 			var	partner = data[2].data;

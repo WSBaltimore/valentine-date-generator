@@ -21,10 +21,10 @@ a:hover { cursor: pointer; text-decoration: none; }
 .main-content { text-align: center; width: 100%; height: 100%;
 	&:before { content: ''; display: inline-block; margin-right: -0.25em; height: 100%; vertical-align: middle; }
 	&.loading {
-		&:after { background: rgba(156, 5, 5, 0.75); content: ''; display: block; position: absolute; top: 0; right: 0; bottom: 0; left: 0; animation: fadeInDown 1s; }
+		&:after { background: rgba(156, 5, 5, 0.75); content: ''; display: block; position: absolute; top: 0; right: 0; bottom: 0; left: 0; .animation(fadeIn 1s); }
 
 		/* :not(:required) hides this rule from IE9 and below */
-		.loading-animation:not(:required) { display: inline-block; margin: -(@heart-size / 2) 0 0 -(@heart-size / 2); position: absolute; top: 50%; left: 50%; overflow: hidden; .hide-text(); width: @heart-size; height: @heart-size; z-index: 10; .transform( rotate(45deg) ); .transform-origin(50% 50%);
+		.loading-animation:not(:required) { display: inline-block; margin: -(@heart-size / 2) 0 0 -(@heart-size / 2); position: absolute; top: 50%; left: 50%; overflow: hidden; .hide-text(); width: @heart-size; height: @heart-size; z-index: 10; .transform( rotate(45deg) ); .transform-origin(50% 50%); .animation(fadeIn 1s);
 			&:after, &:before { position: absolute; content: ""; background: #fff; }
 			&:before { .border-left-radius(@heart-size / 3); top: @heart-size / 3; left: 0; width: @heart-size; height: (2 * @heart-size / 3); }
 			&:after { .border-top-radius(@heart-size / 3); top: 0; left: @heart-size / 3; width: (2 * @heart-size / 3); height: (@heart-size / 3) + 1; }
@@ -35,8 +35,7 @@ a:hover { cursor: pointer; text-decoration: none; }
 	.statement { background: rgba(156, 5, 5, 0.65); font: 42px/1em @font-family-sans; margin: 0 0 20px; padding: 60px 40px; text-align: left; width: 100%; }
 }
 .visual,
-.logo,
-.loading-animation { display: none; }
+.logo { display: none; }
 .logout { padding: 0 0 10px; }
 
 // Buttons
@@ -66,7 +65,7 @@ a:hover { cursor: pointer; text-decoration: none; }
 // Modules
 .page-login {
 	h1 { margin: 0 0 40px; text-shadow: 1px 1px 0 #000;
-		span { display: inline-block; font: 24px/1em @font-family-sans; margin: 0 0 20px; text-transform: uppercase; }
+		span { display: inline-block; font: 24px/1em @font-family-sans; margin: 0 0 40px; text-transform: uppercase; }
 		strong { font: 48px/1.25em @font-family-script; text-transform: none; }
 	}
 }
@@ -81,7 +80,7 @@ a:hover { cursor: pointer; text-decoration: none; }
 	.statement { font-size: 20px; line-height: 1.5em; margin: 0 0 20px;
 		a { border-bottom: 3px solid #fff; color: #fff; }
 	}
-	.share { margin: 0; padding: 0; list-style: none;
+	.share { margin: 0 0 20px; padding: 0; list-style: none;
 		li { display: inline-block;
 			&.facebook .share { .sprite-block(0, 0, 44px, 44px); }
 			&.twitter .share { .sprite-block(-49px, 0, 44px, 44px); }
@@ -98,7 +97,7 @@ a:hover { cursor: pointer; text-decoration: none; }
 		.centered { width: 50%; }
 		.statement { margin: 0 0 40px; text-align: center; text-shadow: 1px 1px 0 #000; }
 		.visual { .size(232px, 120px); display: block; margin: 0 auto 40px; position: relative;
-			.figure { background-position: center center; position: absolute; margin: -70px 0 0; top: 50%; animation: bounceIn 1s;
+			.figure { background-position: center center; position: absolute; margin: -70px 0 0; top: 50%; .animation(bounceIn 1s);
 				&.figure-1 { left: 50px; }
 				&.figure-2 { right: 50px; }
 				&.male { .ir(61px, 120px, 'man.png'); }
@@ -114,7 +113,7 @@ a:hover { cursor: pointer; text-decoration: none; }
 
 	.page-login {
 		h1 {
-			strong { font-size: 72px; }
+			strong { font-size: 82px; }
 		}
 	}
 	.page-start {
@@ -123,6 +122,6 @@ a:hover { cursor: pointer; text-decoration: none; }
 		}
 	}
 	.page-results {
-		.statement { font-size: 28px; }
+		.statement { font-size: 28px; margin: 0 0 20px; }
 	}
 }
