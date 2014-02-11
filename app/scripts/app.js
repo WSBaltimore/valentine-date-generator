@@ -25,23 +25,6 @@ app.config( function( $routeProvider, $provide ) {
 			redirectTo: '/'
 		});
 
-	$provide.decorator('$rootScope', [
-		'$delegate',
-		function($delegate) {
-			$delegate.safeApply = function(fn) {
-				var phase = $delegate.$$phase;
-				if (phase === "$apply" || phase === "$digest") {
-					if (fn && typeof fn === 'function') {
-						fn();
-					}
-				} else {
-					$delegate.$apply(fn);
-				}
-			};
-			return $delegate;
-		}
-	]);
-
 	FB.init({
 		appId: '392018434276495',
 		status: true,

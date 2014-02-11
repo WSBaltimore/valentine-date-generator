@@ -7,6 +7,8 @@ app.directive('contenteditable', function() {
 		link: function(scope, element, attrs, ngModel) {
 			if (!ngModel) return; // do nothing if no ng-model
 
+			element.html('');
+
 			// Specify how UI should be updated
 			ngModel.$render = function() {
 				element.html(ngModel.$viewValue || '');

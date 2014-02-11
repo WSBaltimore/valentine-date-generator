@@ -37,11 +37,13 @@ app.controller('StartCtrl', function ($scope, $location, date) {
 	};
 
 	// Get user data and set location
-	date.getFacebookData().then(function(facebook) {
-		console.log(facebook);
-		$scope.user = facebook;
-		$scope.userPreferences.location = facebook.location.name;
-		$scope.userPreferences.gender = $scope.genderChoices[0].value;
+	date.getLoginStatus().then(function(status) {
+		date.getFacebookData().then(function(facebook) {
+			console.log(facebook);
+			$scope.user = facebook.data;
+			$scope.userPreferences.location = facebook.data.location.name;
+			$scope.userPreferences.gender = $scope.genderChoices[0].value;
+		});
 	});
 
 });

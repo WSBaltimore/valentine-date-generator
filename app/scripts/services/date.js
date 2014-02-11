@@ -13,9 +13,10 @@ app.factory('date', function ($http, $q, $location) {
 		gift: ''
 	};
 
-	if ( !userID || !accessToken ) {
+	if (userID === 'undefined' || accessToken === 'undefined') {
 		$location.path('/');
-	};
+		return;
+	}
 
 	////////////////////
 	// Data Requests //
@@ -26,11 +27,28 @@ app.factory('date', function ($http, $q, $location) {
 		$location.path('/');
 	};
 
+	var getLoginStatus = function () {
+		var deferred = $q.defer();
+
+		FB.getLoginStatus(function(response) {
+			if (response.status === 'connected') {
+				userID = response.authResponse.userID;
+				accessToken = response.authResponse.accessToken;
+				deferred.resolve(response);
+			} else {
+				deferred.reject();
+			}
+		});
+
+		return deferred.promise;
+	};
+
 	var getUserData = function () {
 		var deferred = $q.defer();
 
 		FB.login(function(response) {
 			if (response.authResponse) {
+				console.log(response);
 				userID = response.authResponse.userID;
 				accessToken = response.authResponse.accessToken;
 				deferred.resolve( response );
@@ -48,10 +66,13 @@ app.factory('date', function ($http, $q, $location) {
 	 * @return {object} A promise containing the user's Facebook data
 	 */
 	var getFacebookData = function() {
-		return $http.get('https://graph.facebook.com/' + userID + '?access_token=' + accessToken + '&fields=id,name,age_range,relationship_status,gender,location,significant_other,checkins,family,friends.fields(name,birthday,relationship_status,gender,significant_other,television.fields(name,id),movies.fields(name,id),games.fields(name,id),music.fields(id,name),books.fields(name,id))').then(function(facebook) {
+		return $http.get('https://graph.facebook.com/' + userID + '?access_token=' + accessToken + '&fields=id,name,age_range,relationship_status,gender,location,significant_other,checkins,family,friends.fields(name,birthday,relationship_status,gender,significant_other,television.fields(name,id),movies.fields(name,id),games.fields(name,id),music.fields(id,name),books.fields(name,id))').success(function(facebook) {
 			console.log('retrieved facebook data');
-			console.log(facebook.data);
-			return facebook.data;
+			console.log(facebook);
+			return facebook;
+		}).error(function (data) {
+			console.log('error: ' + data);
+			$location.path('/');
 		});
 	};
 
@@ -60,13 +81,13 @@ app.factory('date', function ($http, $q, $location) {
 	 * @return {object} A promise containing the user's selected partner's data
 	 */
 	var getPartnerData = function (facebook) {
-		var friends = facebook.friends.data;
+		var friends = facebook.data.friends.data;
 		var availableFriends = [];
 		var family = [];
 		var valid = true;
 
 		// setup array of family member IDs
-		angular.forEach(facebook.family.data, function(familyMember, key) {
+		angular.forEach(facebook.data.family.data, function(familyMember, key) {
 			this.push( familyMember.id );
 		}, family);
 
@@ -232,9 +253,11 @@ app.factory('date', function ($http, $q, $location) {
 	var generateDate = function () {
 		console.log('generating date...');
 
-		if ( !userID || !accessToken ) {
+		// If we don't have all the data we need, send them on their way...
+		if (userID === 'undefined' || accessToken === 'undefined') {
 			$location.path('/');
-		} else if ( !userPreferences.hasOwnProperty('location') || !userPreferences.hasOwnProperty('gender') ) {
+			return;
+		} else if (typeof userPreferences.location === 'undefined' || typeof userPreferences.gender === 'undefined') {
 			$location.path('/start');
 			return;
 		}
@@ -325,6 +348,7 @@ app.factory('date', function ($http, $q, $location) {
 
 	return {
 		user: { userId: userID, accessToken: accessToken},
+		getLoginStatus: getLoginStatus,
 		getUserData: getUserData,
 		getFacebookData: getFacebookData,
 		setUserPreferences: setUserPreferences,
