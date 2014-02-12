@@ -282,7 +282,7 @@ app.factory('date', function ($http, $q, $location) {
 			return getLocationData(coords, options).then(function(restaurants) {
 				var selectedRestaurant = getRandomArrayValue(restaurants);
 				restaurant.name = selectedRestaurant.name;
-				restaurant.link = encodeURI('https://www.google.com/maps/preview/place/' + selectedRestaurant.name.replace(' ', '+') + '/@' + selectedRestaurant.geometry.location.d + ',' + selectedRestaurant.geometry.location.e);
+				restaurant.link = encodeURI('https://www.google.com/maps/preview/place/' + selectedRestaurant.name.replace(' ', '+') + '/@' + selectedRestaurant.geometry.location.d + ',' + selectedRestaurant.geometry.location.e + ',17z');
 				return restaurant;
 			}, function(data) {
 				// no results found, return a default restaurant
