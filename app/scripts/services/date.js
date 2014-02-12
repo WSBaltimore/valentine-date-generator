@@ -294,7 +294,7 @@ app.factory('date', function ($http, $q, $location) {
 				var randomRestaurant = getRandomArrayValue(restaurants);
 				console.log( randomRestaurant );
 				restaurant.name = randomRestaurant.name;
-				restaurant.link = encodeURI('https://www.google.com/maps/preview/place/' + randomRestaurant.name.replace(' ', '+') + '/@' + randomRestaurant.geometry.location.d + ',' + randomRestaurant.geometry.location.e );
+				restaurant.link = encodeURI('https://www.google.com/maps/place/' + randomRestaurant.name.replace(' ', '+') + '/@' + randomRestaurant.geometry.location.d + ',' + randomRestaurant.geometry.location.e + ',17z' );
 				return restaurant;
 			}, function (data) {
 				// no results found, return a default restaurant
