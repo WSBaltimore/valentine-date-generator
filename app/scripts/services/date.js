@@ -8,8 +8,8 @@ app.factory('date', function ($http, $q, $location) {
 	var userPreferences = {};
 	var date = {
 		partner: {},
-		restaurant: '',
-		activity: '',
+		restaurant: {},
+		activity: {},
 		gift: ''
 	};
 
@@ -65,11 +65,11 @@ app.factory('date', function ($http, $q, $location) {
 	 * @return {object} A promise containing the user's Facebook data
 	 */
 	var getFacebookData = function() {
-		return $http.get('https://graph.facebook.com/' + userID + '?access_token=' + accessToken + '&fields=id,name,age_range,relationship_status,gender,location,significant_other,checkins,family,friends.fields(name,birthday,relationship_status,gender,significant_other,television.fields(name,id),movies.fields(name,id),games.fields(name,id),music.fields(id,name),books.fields(name,id))').success(function(facebook) {
+		return $http.get('https://graph.facebook.com/' + userID + '?access_token=' + accessToken + '&fields=id,name,gender,location,family,friends.fields(name,birthday,relationship_status,gender)').success(function(facebook) {
 			console.log('retrieved facebook data');
 			return facebook;
 		}).error(function (data) {
-			console.log('error: ' + data);
+			console.log(data);
 			$location.path('/');
 		});
 	};
@@ -85,9 +85,11 @@ app.factory('date', function ($http, $q, $location) {
 		var valid = true;
 
 		// setup array of family member IDs
-		angular.forEach(facebook.data.family.data, function(familyMember, key) {
-			this.push( familyMember.id );
-		}, family);
+		if (facebook.data.family) {
+			angular.forEach(facebook.data.family.data, function(familyMember, key) {
+				this.push(familyMember.id);
+			}, family);
+		}
 
 		angular.forEach(friends, function(friend, key) {
 			valid = true;
@@ -138,6 +140,8 @@ app.factory('date', function ($http, $q, $location) {
 	};
 
 	var getLocationData = function (location, options) {
+		if (location.data.status !== 'OK') { return; }
+
 		var options = (typeof options === 'object') ? options : {};
 		var coords = location.data.results[0].geometry.location;
 
@@ -260,45 +264,34 @@ app.factory('date', function ($http, $q, $location) {
 			return;
 		}
 
-		var restaurantDefaults = ['a steak house', 'an Italian restaurant', 'a Chinese restaurant', 'a sushi bar', 'a teppanyaki restaurant', 'a fondue restaurant', 'a burger joint', 'a fast food restaurant'];
-		var activities = ['a cozy bar', 'a romantic spot', 'a cool museum', 'a trendy cafe', 'a karaoke bar', 'a cave for some spelunking', 'a pole dancing class', 'ye olde fashioned photo parlor', 'stargaze on the hood of your car', 'a bikram yoga class', 'a prancercising class', 'a zoo', 'a spiritual medium', 'your family reunion', 'a gun range', 'a hunting lodge', 'an art gallery', 'an arcade', 'a wine tasting', 'a brewery', 'a medical operating theater', 'a driving range', 'a spa', 'a LAN meetup', 'a mini golf course', 'play darts', 'the opera', 'a movie', 'volunteer with the community', 'skydive', 'a bouncy castle', 'a mime show' ];
-
-		// Location
-		var coords = getCoordinateData().then(function(coords) {
-			return coords;
-		}, function (error) {
-			console.log(error);
-		});
-
-		// Activity
+		// Set Activity
 		var activity = {};
+		var activities = ['a cozy bar', 'a romantic spot', 'a cool museum', 'a trendy cafe', 'a karaoke bar', 'a cave for some spelunking', 'a pole dancing class', 'ye olde fashioned photo parlor', 'stargaze on the hood of your car', 'a bikram yoga class', 'a prancercising class', 'a zoo', 'a spiritual medium', 'your family reunion', 'a gun range', 'a hunting lodge', 'an art gallery', 'an arcade', 'a wine tasting', 'a brewery', 'a medical operating theater', 'a driving range', 'a spa', 'a LAN meetup', 'a mini golf course', 'play darts', 'the opera', 'a movie', 'volunteer with the community', 'skydive', 'a bouncy castle', 'a mime show' ];
 		activity.name = getRandomArrayValue(activities);
 		activity.link = encodeURI('https://www.google.com/#q=' + activity.name.replace(' ', '+') + '+in+' + userPreferences.location.replace(' ', '+') );
 
 		// Restaurant
-		var restaurant = coords.then(function (coords) {
+		var restaurantDefaults = ['a steak house', 'an Italian restaurant', 'a Chinese restaurant', 'a sushi bar', 'a teppanyaki restaurant', 'a fondue restaurant', 'a burger joint', 'a fast food restaurant'];
+		var restaurant = getCoordinateData().then(function (coords) {
 			var restaurant = {};
 			var randomRestaurant = {};
-
-			if (coords.data.status !== 'OK') {
-				randomRestaurant = getRandomArrayValue(restaurantDefaults);
-				restaurant.name = randomRestaurant;
-				restaurant.link = encodeURI('https://www.google.com/#q=' + randomRestaurant.replace(' ', '+') + '+in+' + userPreferences.location.replace(' ', '+') );
-			}
-
 			var options = { 'types': ['restaurant', 'cafe', 'bar'] };
 
-			return getLocationData(coords, options).then(function (restaurants) {
-				var randomRestaurant = getRandomArrayValue(restaurants);
-				restaurant.name = randomRestaurant.name;
-				restaurant.link = encodeURI('https://www.google.com/maps/preview/place/' + randomRestaurant.name.replace(' ', '+') + '/@' + randomRestaurant.geometry.location.d + ',' + randomRestaurant.geometry.location.e );
+			if (coords.data.status !== 'OK') { return; }
+
+			return getLocationData(coords, options).then(function(restaurants) {
+				var selectedRestaurant = getRandomArrayValue(restaurants);
+				restaurant.name = selectedRestaurant.name;
+				restaurant.link = encodeURI('https://www.google.com/maps/preview/place/' + selectedRestaurant.name.replace(' ', '+') + '/@' + selectedRestaurant.geometry.location.d + ',' + selectedRestaurant.geometry.location.e);
 				return restaurant;
-			}, function (data) {
+			}, function(data) {
 				// no results found, return a default restaurant
 				randomRestaurant = getRandomArrayValue(restaurantDefaults);
 				restaurant.name = randomRestaurant;
-				restaurant.link = encodeURI('https://www.google.com/#q=' + randomRestaurant.replace(' ', '+') + '+in+' + userPreferences.location.replace(' ', '+') );
+				restaurant.link = encodeURI('https://www.google.com/#q=' + randomRestaurant.replace(' ', '+') + '+in+' + userPreferences.location.replace(' ', '+'));
+				return restaurant;
 			});
+
 		});
 
 		// Facebook
@@ -306,12 +299,20 @@ app.factory('date', function ($http, $q, $location) {
 			return getPartnerData(facebook);
 		});
 
-		return $q.all([restaurant, activity, partner]).then(function(data) {
+		return $q.all([restaurant, partner]).then(function(data) {
 			var restaurant = data[0];
-			var	activity = data[1];
-			var	partner = data[2].data;
+			var	partner = data[1].data;
 
-			date.restaurant = restaurant;
+			// If no coordinate data, pick a random restaurant
+			if (!restaurant) {
+				console.log('no coordinate data, picking random restaurant');
+				var randomRestaurant = getRandomArrayValue(restaurantDefaults);
+				date.restaurant.name = randomRestaurant;
+				date.restaurant.link = encodeURI('https://www.google.com/#q=' + randomRestaurant.replace(' ', '+') + '+in+' + userPreferences.location.replace(' ', '+') );
+			} else {
+				date.restaurant = restaurant;
+			}
+
 			date.activity = activity;
 			date.partner = partner;
 			date.gift = getGift(partner);

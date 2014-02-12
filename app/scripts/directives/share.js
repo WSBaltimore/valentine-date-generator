@@ -27,7 +27,7 @@ app.directive('share', function ($window) {
 					method: 'feed',
 					name: attrs.title,
 					link: attrs.link,
-					//picture: attrs.image,
+					picture: attrs.image,
 					caption: attrs.caption,
 					description: attrs.description
 				});

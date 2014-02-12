@@ -1,6 +1,6 @@
 <div class="main-content page-results">
 	<div class="centered">
-		<a class="engaging" href="http://webershandwick.com" target="_blank">Weber Shandwick</a>
+		<!-- <a ng-hide="true" class="engaging" href="http://webershandwick.com" target="_blank">Weber Shandwick</a> -->
 		<div class="statement">
 			Congratulations, you've been matched with <span>{{theDate.partner.name}}</span>.
 			We suggest taking {{theDate.partner.first_name}} to <a href="{{theDate.activity.link}}" target="_blank">{{theDate.activity.name}}</a> to start things off.
@@ -9,8 +9,8 @@
 			Enjoy your date!
 		</div>
 		<ul class="share">
-			<li class="facebook"><share network="facebook" title="{{share.title}}" description="{{share.long_description}}" link="{{share.link}}" caption="{{share.caption}}" image="{{share.image}}" tag="{{share.tag}}"></share></li>
-			<li class="twitter"><share network="twitter" title="{{share.title}}" description="{{share.short_description}}" link="{{share.link}}" hashtags="{{share.hashtags}}"></share></li>
+			<li class="facebook"><share network="facebook" title="{{share.title}}" description="{{share.description}}" link="{{share.link}}" caption="{{share.caption}}" image="{{share.image}}"></share></li>
+			<li class="twitter"><share network="twitter" description="{{share.description}}" link="{{share.link}}" hashtags="{{share.hashtags}}"></share></li>
 		</ul>
 		<a class="btn btn-lg" href="/#/start">Try Again</a>
 	</div>
